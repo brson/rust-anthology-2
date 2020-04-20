@@ -48,6 +48,7 @@ fn walk(state: &mut State, node: &Node) {
                 },
                 "h1" | "h2" | "h3" | "h4" | "h5" | "h6" => {
                     handle_heading(state, node, name);
+                    return;
                 }
                 _ => {
                 }
