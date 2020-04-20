@@ -187,7 +187,7 @@ fn run_convert_article(cmd: CmdOpts<ConvertArticle>) -> Result<()> {
     for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|meta, post| {
         match html::extract_article(&post) {
             Ok(dom) => {
-                let doc = convert::from_dom(&meta, &dom)?;
+                let doc = convert::from_dom(&meta, &dom);
                 info!("{:#?}", doc);
             }
             Err(e) => {
@@ -206,7 +206,7 @@ fn run_render_article(cmd: CmdOpts<RenderArticle>) -> Result<()> {
     for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|meta, post| {
         match html::extract_article(&post) {
             Ok(dom) => {
-                let doc = convert::from_dom(&meta, &dom)?;
+                let doc = convert::from_dom(&meta, &dom);
                 let doc = sanitize::sanitize(doc);
                 let doc = render::to_string(&assets, &doc)?;
                 if !cmd.cmd.to_file {
@@ -244,7 +244,7 @@ fn run_extract_title(cmd: CmdOpts<ExtractTitle>) -> Result<()> {
     for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|meta, post| {
         match html::extract_article(&post) {
             Ok(dom) => {
-                let doc = convert::from_dom(&meta, &dom)?;
+                let doc = convert::from_dom(&meta, &dom);
                 let doc = sanitize::sanitize(doc);
                 let title = extract::title(&doc);
                 match title {

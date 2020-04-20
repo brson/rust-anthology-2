@@ -7,7 +7,7 @@ use rcdom::{Node as Node, NodeData};
 use crate::doc;
 use log::{warn, debug, error};
 
-pub fn from_dom(post: &BlogPost, dom: &SubDom) -> Result<doc::Document> {
+pub fn from_dom(post: &BlogPost, dom: &SubDom) -> doc::Document {
     let mut state = State {
         mode: Mode::AccumulateBlocks(Vec::new()),
     };
@@ -33,7 +33,7 @@ pub fn from_dom(post: &BlogPost, dom: &SubDom) -> Result<doc::Document> {
         meta, body
     };
 
-    Ok(doc)
+    doc
 }
 
 struct State {
