@@ -29,7 +29,7 @@ pub struct Header {
 
 #[derive(Debug)]
 pub struct Paragraph {
-    spans: Vec<Inline>,
+    pub inlines: Vec<Inline>,
 }
 
 #[derive(Debug)]

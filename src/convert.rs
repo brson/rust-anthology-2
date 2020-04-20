@@ -1,8 +1,9 @@
+use std::mem;
 use anyhow::Result;
 use crate::BlogPost;
 use crate::html::SubDom;
 use markup5ever_rcdom as rcdom;
-use rcdom::{Handle, NodeData};
+use rcdom::{Node as Node, NodeData};
 use crate::doc;
 
 pub fn from_dom(post: &BlogPost, dom: &SubDom) -> Result<doc::Document> {
@@ -36,7 +37,7 @@ enum Mode {
     AccumulateInlines(Vec<doc::Inline>),
 }
 
-fn walk(state: &mut State, node: &Handle) {
+fn walk(state: &mut State, node: &Node) {
 
     
 
@@ -51,6 +52,11 @@ fn walk(state: &mut State, node: &Handle) {
                 }
             }
         }
+        NodeData::Text { contents } => {
+            let text = String::from(contents.borrow().as_ref());
+            handle_text(state, node, text);
+            return;
+        }
         _ => {
         }
     }
@@ -58,19 +64,43 @@ fn walk(state: &mut State, node: &Handle) {
     walk_children(state, node);
 }
 
-fn handle_para(state: &mut State, node: &Handle) {
+fn handle_para(state: &mut State, node: &Node) {
     match state.mode {
         Mode::ScanForBlocks => {
             state.mode = Mode::AccumulateInlines(Vec::new());
-            walk_children(state, node)
+            walk_children(state, node);
+            let mode = mem::replace(&mut state.mode, Mode::ScanForBlocks);
+            match mode {
+                Mode::AccumulateInlines(inlines) => {
+                    let new_para = doc::Paragraph {
+                        inlines,
+                    };
+                    let new_block = doc::Block::Paragraph(new_para);
+                    state.blocks.push(new_block);
+                }
+                _ => {
+                    panic!("unexpected mode");
+                }
+            }
         },
         _ => {
-            walk_children(state, node)
         }
     }
 }
 
-fn walk_children(state: &mut State, node: &Handle) {
+fn handle_text(state: &mut State, node: &Node, text: String) {
+    match state.mode {
+        Mode::AccumulateInlines(ref mut inlines) => {
+            let new = doc::Inline::Text(text);
+            inlines.push(new);
+        }
+        _ => {
+        }
+    }
+    walk_children(state, node);
+}
+
+fn walk_children(state: &mut State, node: &Node) {
     for child in node.children.borrow().iter() {
         walk(state, &child);
     }
