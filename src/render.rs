@@ -24,7 +24,7 @@ fn render_doc(buf: &mut Buf, doc: &Document) {
 fn render_head(buf: &mut Buf, meta: &Meta) {
     writeln!(buf);
     writeln!(buf, "<head>");
-    writeln!(buf, "  <meta charset='utf-8'");
+    writeln!(buf, "  <meta charset='utf-8'>");
     writeln!(buf, "</head>");
     writeln!(buf);
 }

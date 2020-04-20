@@ -87,26 +87,47 @@ fn walk_children(dom: &Handle, lvl: u32) {
 fn find_article(dom: &Handle) -> Option<Handle> {
     let mut candidate = None;
     find_article_(dom, &mut candidate);
-    candidate
+    candidate.map(|c| c.node)
 }
 
-fn find_article_(dom: &Handle, candidate: &mut Option<Handle>) {
+struct Candidate {
+    name: String,
+    node: Handle,
+}
+
+fn find_article_(dom: &Handle, candidate: &mut Option<Candidate>) {
     match &dom.data {
         NodeData::Element { name, .. } => {
             let mut is_candidate = false;
-            if name.local.as_ref() == "article" {
+            let name = name.local.as_ref();
+            if name == "article" {
                 is_candidate = true;
             }
-            if name.local.as_ref() == "main" {
+            if name == "main" {
                 is_candidate = true;
             }
 
             if is_candidate {
-                if candidate.is_none() {
-                    *candidate = Some(dom.clone());
-                } else {
-                    warn!("multiple article candidates");
-                    warn!("new candidate: {}", name.local);
+                match candidate {
+                    None => {
+                        *candidate = Some(Candidate {
+                            name: name.to_string(),
+                            node: dom.clone(),
+                        });
+                    }
+                    Some(ref mut candidate) => {
+                        warn!("multiple article candidates");
+                        if candidate.name == "main" && name == "article" {
+                            warn!("upgrading from 'main' to 'article'");
+                            *candidate = Candidate {
+                                name: name.to_string(),
+                                node: dom.clone(),
+                            };
+                        } else {
+                            warn!("new candidate: {}", name);
+                            warn!("using old candidate");
+                        }
+                    }
                 }
             }
 
@@ -118,7 +139,7 @@ fn find_article_(dom: &Handle, candidate: &mut Option<Handle>) {
     }
 }
 
-fn find_article_children(dom: &Handle, candidate: &mut Option<Handle>) {
+fn find_article_children(dom: &Handle, candidate: &mut Option<Candidate>) {
     for child in dom.children.borrow().iter() {
         find_article_(&child, candidate);
     }

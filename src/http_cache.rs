@@ -45,7 +45,7 @@ impl HttpCache {
     }
 }
 
-fn url_hash(url: &Url) -> String {
+pub fn url_hash(url: &Url) -> String {
     let mut hasher = Blake2b::new();
     hasher.input(url.as_str());
     let res = hasher.result();

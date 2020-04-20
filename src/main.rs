@@ -1,5 +1,6 @@
 #![allow(unused)]
 
+use std::fs;
 use reqwest::StatusCode;
 use reqwest::blocking::Client as HttpClient;
 use regex::Regex;
@@ -60,6 +61,8 @@ struct ConvertArticle {
 #[derive(StructOpt, Debug)]
 struct RenderArticle {
     url_regex: String,
+    #[structopt(long)]
+    to_file: bool,
 }
 
 #[derive(StructOpt, Debug)]
@@ -135,7 +138,7 @@ fn run_fetch(cmd: CmdOpts<FetchCmd>) -> Result<()> {
     })
 }
 
-type PostHandler = dyn Fn(&BlogPost, String) -> Result<()>;
+type PostHandler<'a> = dyn Fn(&BlogPost, String) -> Result<()> + 'a;
 
 fn for_each_post(opts: &GlobalOpts, config: &Config, url_regex: &str, f: &PostHandler) -> Result<()> {
     let regex = Regex::new(url_regex)
@@ -197,7 +200,18 @@ fn run_render_article(cmd: CmdOpts<RenderArticle>) -> Result<()> {
                 let doc = convert::from_dom(&meta, &dom)?;
                 let doc = sanitize::sanitize(doc);
                 let doc = render::to_string(&doc)?;
-                info!("{}", doc);
+                if !cmd.cmd.to_file {
+                    info!("{}", doc);
+                } else {
+                    let hash = http_cache::url_hash(&meta.url);
+                    let render_dir = cmd.global_opts.data_dir.join("renders");
+                    let render_file = render_dir.join(format!("{}.html", hash));
+                    fs::create_dir_all(&render_dir)
+                        .context("creating render dir")?;
+                    fs::write(&render_file, doc)
+                        .context("writing rendered doc")?;
+                    info!("rendered at {}", render_file.display());
+                }
             }
             Err(e) => {
                 error!("{}", e);

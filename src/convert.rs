@@ -38,9 +38,6 @@ enum Mode {
 }
 
 fn walk(state: &mut State, node: &Node) {
-
-    
-
     match &node.data {
         NodeData::Element { name, .. } => {
             match name.local.as_ref() {
