@@ -68,7 +68,8 @@ fn walk(state: &mut State, node: &Node) {
                     return;
                 }
                 "blockquote" => {
-
+                    handle_blockquote(state, node);
+                    return;
                 }
                 _ => {
                 }
@@ -321,6 +322,43 @@ fn handle_list_item(state: &mut State, node: &Node) {
             //warn!("unhandled list item");
             state.mode = old_mode;
             walk_children(state, node);
+        }
+    }
+}
+
+fn handle_blockquote(state: &mut State, node: &Node) {
+    let old_mode = mem::replace(&mut state.mode, Mode::Placeholder);
+    match old_mode {
+        Mode::ScanForBlocks => {
+            state.mode = Mode::AccumulateBlocks(Vec::new());
+            walk_block_children(state, node);
+            let mode = mem::replace(&mut state.mode, Mode::Placeholder);
+            match mode {
+                Mode::AccumulateBlocks(blocks) => {
+                    let new_blockquote = doc::Blockquote { blocks };
+                    let new_block = doc::Block::Blockquote(new_blockquote);
+                    state.blocks.push(new_block);
+                    state.mode = Mode::ScanForBlocks;
+                },
+                e => panic!("unexpected mode {:?}", e),
+            }
+        },
+        Mode::AccumulateBlocks(mut blocks) => {
+            state.mode = Mode::AccumulateBlocks(Vec::new());
+            walk_block_children(state, node);
+            let mode = mem::replace(&mut state.mode, Mode::Placeholder);
+            match mode {
+                Mode::AccumulateBlocks(new_blocks) => {
+                    let new_blockquote = doc::Blockquote { blocks: new_blocks };
+                    let new_block = doc::Block::Blockquote(new_blockquote);
+                    blocks.push(new_block);
+                    state.mode = Mode::AccumulateBlocks(blocks)
+                },
+                e => panic!("unexpected mode {:?}", e),
+            }
+        }
+        _ => {
+            //warn!("unhandled blockquote item")
         }
     }
 }
