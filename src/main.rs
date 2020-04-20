@@ -58,6 +58,7 @@ fn main() -> Result<()> {
     let env = env_logger::Env::new().default_filter_or("info");
     env_logger::Builder::from_env(env)
         .format_timestamp(None)
+        .target(env_logger::Target::Stdout)
         .init();
 
     let opts = Opts::from_args();
@@ -89,7 +90,12 @@ fn run_fetch_matching(cmd: CmdOpts<FetchMatchingCmd>) -> Result<()> {
     let mut client = HttpClient::new();
     for post in &cmd.config.blog_posts {
         if regex.is_match(&post.url.as_str()) {
-            let page = fetch_url(&mut client, &post.url)?;
+            info!("fetching {}", post.url);
+            let page = fetch_url(&mut client, &post.url);
+            match page {
+                Ok(page) => info!("{}", page),
+                Err(err) => error!("error: {}", err),
+            }
         }
     }
     
@@ -98,6 +104,10 @@ fn run_fetch_matching(cmd: CmdOpts<FetchMatchingCmd>) -> Result<()> {
 
 fn fetch_url(client: &mut HttpClient, url: &Url) -> Result<String> {
     let resp = client.get(url.clone()).send()?;
+    debug!("printing headers");
+    for (key, value) in resp.headers() {
+        debug!("{}: {:?}", key, value);
+    }
     if resp.status().is_success() {
         Ok(resp.text()
             .context("parsing response as text")?)
