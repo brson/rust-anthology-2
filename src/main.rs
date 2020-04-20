@@ -22,6 +22,7 @@ mod sanitize;
 mod render;
 mod assets;
 mod config;
+mod extract;
 
 #[derive(StructOpt, Debug)]
 struct Opts {
@@ -40,6 +41,7 @@ enum Command {
     ConvertArticle(ConvertArticle),
     RenderArticle(RenderArticle),
     CopyAssets(CopyAssets),
+    ExtractTitle(ExtractTitle),
 }
 
 #[derive(StructOpt, Debug)]
@@ -71,6 +73,11 @@ struct RenderArticle {
 
 #[derive(StructOpt, Debug)]
 struct CopyAssets { }
+
+#[derive(StructOpt, Debug)]
+struct ExtractTitle {
+    url_regex: String,
+}
 
 #[derive(StructOpt, Debug)]
 struct GlobalOpts {
@@ -122,6 +129,9 @@ fn main() -> Result<()> {
         }
         Command::CopyAssets(cmd) => {
             run_copy_assets(CmdOpts { global_opts, config, cmd })
+        }
+        Command::ExtractTitle(cmd) => {
+            run_extract_title(CmdOpts { global_opts, config, cmd })
         }
     }
 }
@@ -228,4 +238,28 @@ fn run_copy_assets(cmd: CmdOpts<CopyAssets>) -> Result<()> {
     };
 
     assets::copy(&dirs)
+}
+
+fn run_extract_title(cmd: CmdOpts<ExtractTitle>) -> Result<()> {
+    for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|meta, post| {
+        match html::extract_article(&post) {
+            Ok(dom) => {
+                let doc = convert::from_dom(&meta, &dom)?;
+                let doc = sanitize::sanitize(doc);
+                let title = extract::title(&doc);
+                match title {
+                    Some(title) => {
+                        info!("title: {}", title);
+                    },
+                    None => {
+                        error!("no title found");
+                    }
+                }
+            }
+            Err(e) => {
+                error!("{}", e);
+            }
+        }
+        Ok(())
+    })
 }

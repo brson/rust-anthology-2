@@ -32,7 +32,7 @@ pub struct Heading {
     pub level: HeadingLevel,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum HeadingLevel {
     H1, H2, H3, H4, H5, H6,
 }
