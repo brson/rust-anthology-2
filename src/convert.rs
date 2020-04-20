@@ -167,7 +167,7 @@ fn is_inline_element(node: &Node) -> bool {
         NodeData::Element { name, .. } => {
             let name = name.local.as_ref();
             match name {
-                "a" => {
+                "a" | "code" | "em" | "i" | "b" => {
                     true
                 }
                 _ => {

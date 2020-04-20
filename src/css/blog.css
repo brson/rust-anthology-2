@@ -47,6 +47,8 @@ blockquote {
 pre {
     border: 1px solid gray;
     padding: 1.5rem;
+    margin: 2rem 0 2rem 0;
+    overflow: auto;
 }
 
 pre > code {
