@@ -1,12 +1,11 @@
 use anyhow::Result;
 use crate::BlogPost;
 use crate::html::SubDom;
-use crate::doc::Document;
 use markup5ever_rcdom as rcdom;
 use rcdom::{Handle, NodeData};
 use crate::doc;
 
-pub fn from_dom(post: &BlogPost, dom: &SubDom) -> Result<Document> {
+pub fn from_dom(post: &BlogPost, dom: &SubDom) -> Result<doc::Document> {
     let mut state = State {
         blocks: Vec::new(),
         mode: Mode::ScanForBlocks,
@@ -14,7 +13,17 @@ pub fn from_dom(post: &BlogPost, dom: &SubDom) -> Result<Document> {
 
     walk(&mut state, &dom.1);
 
-    panic!()
+    let meta = doc::Meta {
+        origin_url: post.url.clone(),
+    };
+    let body = doc::Body {
+        blocks: state.blocks,
+    };
+    let doc = doc::Document {
+        meta, body
+    };
+
+    Ok(doc)
 }
 
 struct State {

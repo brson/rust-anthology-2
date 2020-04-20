@@ -3,17 +3,17 @@ use url::Url;
 #[derive(Debug)]
 pub struct Document {
     pub meta: Meta,
-    pub doc: Body,
+    pub body: Body,
 }
 
 #[derive(Debug)]
 pub struct Meta {
-    origin_url: Url,
+    pub origin_url: Url,
 }
 
 #[derive(Debug)]
 pub struct Body {
-    blocks: Vec<Block>,
+    pub blocks: Vec<Block>,
 }
 
 #[derive(Debug)]
