@@ -114,31 +114,45 @@ fn handle_heading(state: &mut State, node: &Node, htext: &str) {
             }
         }
         _ => {
-            warn!("unhandled heading");
+            //warn!("unhandled heading");
             walk_children(state, node);
         }
     }
 }
 
 fn handle_para(state: &mut State, node: &Node) {
-    match state.mode {
+    let old_mode = mem::replace(&mut state.mode, Mode::Placeholder);
+    match old_mode {
         Mode::ScanForBlocks => {
             state.mode = Mode::AccumulateInlines(Vec::new());
             walk_children(state, node);
-            let mode = mem::replace(&mut state.mode, Mode::ScanForBlocks);
+            let mode = mem::replace(&mut state.mode, Mode::Placeholder);
             match mode {
                 Mode::AccumulateInlines(inlines) => {
-                    let new_para = doc::Paragraph {
-                        inlines,
-                    };
+                    let new_para = doc::Paragraph { inlines };
                     let new_block = doc::Block::Paragraph(new_para);
                     state.blocks.push(new_block);
+                    state.mode = Mode::ScanForBlocks;
                 }
                 _ => panic!("unexpected mode"),
             }
         },
+        Mode::AccumulateBlocks(mut blocks) => {
+            state.mode = Mode::AccumulateInlines(Vec::new());
+            walk_children(state, node);
+            let mode = mem::replace(&mut state.mode, Mode::Placeholder);
+            match mode {
+                Mode::AccumulateInlines(inlines) => {
+                    let new_para = doc::Paragraph { inlines };
+                    let new_block = doc::Block::Paragraph(new_para);
+                    blocks.push(new_block);
+                    state.mode = Mode::AccumulateBlocks(blocks);
+                }
+                _ => panic!("unexpected mode"),
+            }
+        }
         _ => {
-            warn!("unhandled para");
+            //warn!("unhandled para");
             walk_children(state, node);
         }
     }
@@ -151,7 +165,7 @@ fn handle_text(state: &mut State, node: &Node, text: String) {
             inlines.push(new);
         }
         _ => {
-            warn!("unhandled text");
+            //warn!("unhandled text");
         }
     }
     walk_children(state, node);
@@ -176,7 +190,7 @@ fn handle_list(state: &mut State, node: &Node, type_: doc::ListType) {
             }
         }
         _ => {
-            warn!("unhandled list");
+            //warn!("unhandled list");
             walk_children(state, node);
         }
     }
@@ -199,7 +213,7 @@ fn handle_list_item(state: &mut State, node: &Node) {
             }
         },
         _ => {
-            warn!("unhandled list item");
+            //warn!("unhandled list item");
             walk_children(state, node);
         }
     }
