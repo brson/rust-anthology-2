@@ -65,6 +65,9 @@ fn render_block(buf: &mut Buf, block: &Block) {
         Block::List(list) => {
             render_list(buf, list);
         }
+        Block::Blockquote(blockquote) => {
+            render_blockquote(buf, blockquote);
+        }
     }
     writeln!(buf);
 }
@@ -125,4 +128,12 @@ fn render_list_item(buf: &mut Buf, item: &ListItem) {
         render_block(buf, block);
     }
     writeln!(buf, "</li>");
+}
+
+fn render_blockquote(buf: &mut Buf, item: &Blockquote) {
+    writeln!(buf, "<blockquote>");
+    for block in &item.blocks {
+        render_block(buf, block);
+    }
+    writeln!(buf, "</blockquote>");
 }

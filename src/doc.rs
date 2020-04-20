@@ -21,6 +21,7 @@ pub enum Block {
     Heading(Heading),
     Paragraph(Paragraph),
     List(List),
+    Blockquote(Blockquote),
 }
 
 #[derive(Debug)]
@@ -60,5 +61,10 @@ pub enum ListType {
 
 #[derive(Debug)]
 pub struct ListItem {
+    pub blocks: Vec<Block>,
+}
+
+#[derive(Debug)]
+pub struct Blockquote {
     pub blocks: Vec<Block>,
 }

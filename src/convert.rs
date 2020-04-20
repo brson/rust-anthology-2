@@ -74,6 +74,9 @@ fn walk_(state: &mut State, node: &Node) {
                     handle_list_item(state, node);
                     return;
                 }
+                "blockquote" => {
+
+                }
                 _ => {
                 }
             }
