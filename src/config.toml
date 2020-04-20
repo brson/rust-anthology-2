@@ -1,2 +1,15 @@
 [[blog_posts]]
 url = "https://manishearth.github.io/blog/2015/05/03/where-rust-really-shines"
+
+[[blog_posts]]
+url = "https://smallcultfollowing.com/babysteps/blog/2012/11/18/imagine-never-hearing-the-phrase-aliasable/"
+
+[[blog_posts]]
+url = "http://blog.rust-lang.org/2015/04/10/Fearless-Concurrency.html"
+
+[[blog_posts]]
+url = "https://aturon.github.io/blog/2015/08/27/epoch/"
+
+[[blog_posts]]
+url = "https://brson.github.io/2017/07/10/how-rust-is-tested"
+

@@ -91,6 +91,9 @@ fn find_article_(dom: &Handle, candidate: &mut Option<Handle>) {
             if name.local.as_ref() == "article" {
                 is_candidate = true;
             }
+            if name.local.as_ref() == "main" {
+                is_candidate = true;
+            }
 
             if is_candidate {
                 if candidate.is_none() {
