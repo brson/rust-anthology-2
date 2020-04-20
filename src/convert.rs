@@ -35,6 +35,7 @@ struct State {
 enum Mode {
     ScanForBlocks,
     AccumulateInlines(Vec<doc::Inline>),
+    AccumulateListItems(Vec<doc::ListItem>),
 }
 
 fn walk(state: &mut State, node: &Node) {
@@ -50,6 +51,13 @@ fn walk(state: &mut State, node: &Node) {
                     handle_heading(state, node, name);
                     return;
                 }
+                "ol" => {
+                    handle_list(state, node, doc::ListType::Ordered);
+                    return;
+                }
+                "ul" => {
+                    handle_list(state, node, doc::ListType::Unordered);
+                }
                 _ => {
                 }
             }
@@ -64,6 +72,12 @@ fn walk(state: &mut State, node: &Node) {
     }
 
     walk_children(state, node);
+}
+
+fn walk_children(state: &mut State, node: &Node) {
+    for child in node.children.borrow().iter() {
+        walk(state, &child);
+    }
 }
 
 fn handle_heading(state: &mut State, node: &Node, htext: &str) {
@@ -90,9 +104,7 @@ fn handle_heading(state: &mut State, node: &Node, htext: &str) {
                     let new_block = doc::Block::Heading(new_heading);
                     state.blocks.push(new_block);
                 }
-                _ => {
-                    panic!("unexpected mode");
-                }
+                _ => panic!("unexpected mode"),
             }
         }
         _ => {
@@ -115,9 +127,7 @@ fn handle_para(state: &mut State, node: &Node) {
                     let new_block = doc::Block::Paragraph(new_para);
                     state.blocks.push(new_block);
                 }
-                _ => {
-                    panic!("unexpected mode");
-                }
+                _ => panic!("unexpected mode"),
             }
         },
         _ => {
@@ -138,8 +148,30 @@ fn handle_text(state: &mut State, node: &Node, text: String) {
     walk_children(state, node);
 }
 
-fn walk_children(state: &mut State, node: &Node) {
-    for child in node.children.borrow().iter() {
-        walk(state, &child);
+fn handle_list(state: &mut State, node: &Node, type_: doc::ListType) {
+    match state.mode {
+        Mode::ScanForBlocks => {
+            state.mode = Mode::AccumulateListItems(Vec::new());
+            walk_children(state, node);
+            let mode = mem::replace(&mut state.mode, Mode::ScanForBlocks);
+            match mode {
+                Mode::AccumulateListItems(items) => {
+                    let new_list = doc::List {
+                        type_,
+                        items,
+                    };
+                    let new_block = doc::Block::List(new_list);
+                    state.blocks.push(new_block);
+                },
+                _ => panic!("unexpected mode"),
+            }
+        }
+        _ => {
+            warn!("unhandled list");
+        }
     }
+
+    walk_children(state, node);
 }
+
+
