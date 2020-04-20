@@ -62,6 +62,9 @@ fn render_block(buf: &mut Buf, block: &Block) {
         Block::Paragraph(para) => {
             render_paragraph(buf, para);
         }
+        Block::List(list) => {
+            render_list(buf, list);
+        }
     }
     writeln!(buf);
 }
@@ -100,4 +103,26 @@ fn render_inline(buf: &mut Buf, inline: &Inline) {
             panic!()
         }
     }
+}
+
+fn render_list(buf: &mut Buf, list: &List) {
+    let tag = match list.type_ {
+        ListType::Unordered => "ul",
+        ListType::Ordered => "ol",
+    };
+
+    writeln!(buf, "<{}>", tag);
+    for item in &list.items {
+        render_list_item(buf, item);
+    }
+    writeln!(buf);
+    writeln!(buf, "</{}>", tag);
+}
+
+fn render_list_item(buf: &mut Buf, item: &ListItem) {
+    writeln!(buf, "<li>");
+    for block in &item.blocks {
+        render_block(buf, block);
+    }
+    writeln!(buf, "</li>");
 }

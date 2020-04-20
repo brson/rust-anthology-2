@@ -20,6 +20,7 @@ pub struct Body {
 pub enum Block {
     Heading(Heading),
     Paragraph(Paragraph),
+    List(List),
 }
 
 #[derive(Debug)]
@@ -44,4 +45,20 @@ pub enum Inline {
     Bold(Box<Inline>),
     Italic(Box<Inline>),
     Code(Box<Inline>),
+}
+
+#[derive(Debug)]
+pub struct List {
+    pub type_: ListType,
+    pub items: Vec<ListItem>,
+}
+
+#[derive(Debug)]
+pub enum ListType {
+    Ordered, Unordered,
+}
+
+#[derive(Debug)]
+pub struct ListItem {
+    pub blocks: Vec<Block>,
 }
