@@ -9,17 +9,25 @@ use log::{warn, debug};
 
 pub fn from_dom(post: &BlogPost, dom: &SubDom) -> Result<doc::Document> {
     let mut state = State {
-        blocks: Vec::new(),
-        mode: Mode::ScanForBlocks,
+        mode: Mode::AccumulateBlocks(Vec::new()),
     };
 
     walk(&mut state, &dom.1);
+
+    let blocks = match state.mode {
+        Mode::AccumulateBlocks(blocks) => {
+            blocks
+        },
+        _ => {
+            panic!("unexpected mode {:?}", state.mode);
+        }
+    };
 
     let meta = doc::Meta {
         origin_url: post.url.clone(),
     };
     let body = doc::Body {
-        blocks: state.blocks,
+        blocks: blocks,
     };
     let doc = doc::Document {
         meta, body
@@ -29,13 +37,11 @@ pub fn from_dom(post: &BlogPost, dom: &SubDom) -> Result<doc::Document> {
 }
 
 struct State {
-    blocks: Vec<doc::Block>,
     mode: Mode,
 }
 
 #[derive(Debug)]
 enum Mode {
-    ScanForBlocks,
     AccumulateInlines(Vec<doc::Inline>),
     AccumulateListItems(Vec<doc::ListItem>),
     AccumulateBlocks(Vec<doc::Block>),
@@ -188,20 +194,6 @@ fn is_inline_element(node: &Node) -> bool {
 fn handle_para(state: &mut State, node: &Node) {
     let old_mode = mem::replace(&mut state.mode, Mode::Placeholder);
     match old_mode {
-        Mode::ScanForBlocks => {
-            state.mode = Mode::AccumulateInlines(Vec::new());
-            walk_children(state, node);
-            let mode = mem::replace(&mut state.mode, Mode::Placeholder);
-            match mode {
-                Mode::AccumulateInlines(inlines) => {
-                    let new_para = doc::Paragraph { inlines };
-                    let new_block = doc::Block::Paragraph(new_para);
-                    state.blocks.push(new_block);
-                    state.mode = Mode::ScanForBlocks;
-                }
-                e => panic!("unexpected mode {:?}", e),
-            }
-        },
         Mode::AccumulateBlocks(mut blocks) => {
             state.mode = Mode::AccumulateInlines(Vec::new());
             walk_children(state, node);
@@ -234,11 +226,12 @@ fn handle_heading(state: &mut State, node: &Node, htext: &str) {
         "h6" => doc::HeadingLevel::H6,
         _ => panic!("unexpected heading level"),
     };
-    match state.mode {
-        Mode::ScanForBlocks => {
+    let old_mode = mem::replace(&mut state.mode, Mode::Placeholder);
+    match old_mode {
+        Mode::AccumulateBlocks(mut blocks) => {
             state.mode = Mode::AccumulateInlines(Vec::new());
             walk_children(state, node);
-            let mode = mem::replace(&mut state.mode, Mode::ScanForBlocks);
+            let mode = mem::replace(&mut state.mode, Mode::Placeholder);
             match mode {
                 Mode::AccumulateInlines(inlines) => {
                     let new_heading = doc::Heading {
@@ -246,13 +239,15 @@ fn handle_heading(state: &mut State, node: &Node, htext: &str) {
                         level,
                     };
                     let new_block = doc::Block::Heading(new_heading);
-                    state.blocks.push(new_block);
+                    blocks.push(new_block);
+                    state.mode = Mode::AccumulateBlocks(blocks);
                 }
                 e => panic!("unexpected mode {:?}", e),
             }
         }
         _ => {
             //warn!("unhandled heading");
+            state.mode = old_mode;
             walk_children(state, node);
         }
     }
@@ -274,20 +269,6 @@ fn handle_text(state: &mut State, node: &Node, text: String) {
 fn handle_list(state: &mut State, node: &Node, type_: doc::ListType) {
     let old_mode = mem::replace(&mut state.mode, Mode::Placeholder);
     match old_mode {
-        Mode::ScanForBlocks => {
-            state.mode = Mode::AccumulateListItems(Vec::new());
-            walk_children(state, node);
-            let mode = mem::replace(&mut state.mode, Mode::Placeholder);
-            match mode {
-                Mode::AccumulateListItems(items) => {
-                    let new_list = doc::List { type_, items };
-                    let new_block = doc::Block::List(new_list);
-                    state.blocks.push(new_block);
-                    state.mode = Mode::ScanForBlocks;
-                },
-                e => panic!("unexpected mode {:?}", e),
-            }
-        }
         Mode::AccumulateBlocks(mut blocks) => {
             state.mode = Mode::AccumulateListItems(Vec::new());
             walk_children(state, node);
@@ -337,20 +318,6 @@ fn handle_list_item(state: &mut State, node: &Node) {
 fn handle_blockquote(state: &mut State, node: &Node) {
     let old_mode = mem::replace(&mut state.mode, Mode::Placeholder);
     match old_mode {
-        Mode::ScanForBlocks => {
-            state.mode = Mode::AccumulateBlocks(Vec::new());
-            walk_block_children(state, node);
-            let mode = mem::replace(&mut state.mode, Mode::Placeholder);
-            match mode {
-                Mode::AccumulateBlocks(blocks) => {
-                    let new_blockquote = doc::Blockquote { blocks };
-                    let new_block = doc::Block::Blockquote(new_blockquote);
-                    state.blocks.push(new_block);
-                    state.mode = Mode::ScanForBlocks;
-                },
-                e => panic!("unexpected mode {:?}", e),
-            }
-        },
         Mode::AccumulateBlocks(mut blocks) => {
             state.mode = Mode::AccumulateBlocks(Vec::new());
             walk_block_children(state, node);
@@ -375,9 +342,6 @@ fn handle_blockquote(state: &mut State, node: &Node) {
 
 fn handle_thematic_break(state: &mut State, _node: &Node) {
     match state.mode {
-        Mode::ScanForBlocks => {
-            state.blocks.push(doc::Block::ThematicBreak);
-        },
         Mode::AccumulateBlocks(ref mut blocks) => {
             blocks.push(doc::Block::ThematicBreak);
         }
@@ -390,23 +354,6 @@ fn handle_thematic_break(state: &mut State, _node: &Node) {
 fn handle_pre(state: &mut State, node: &Node) {
     let old_mode = mem::replace(&mut state.mode, Mode::Placeholder);
     match old_mode {
-        Mode::ScanForBlocks => {
-            state.mode = Mode::AccumulateInlines(Vec::new());
-            walk_children(state, node);
-            let mode = mem::replace(&mut state.mode, Mode::Placeholder);
-            match mode {
-                Mode::AccumulateInlines(inlines) => {
-                    let new_code_block = doc::CodeBlock {
-                        lang: doc::CodeLang::Unknown,
-                        inlines
-                    };
-                    let new_block = doc::Block::CodeBlock(new_code_block);
-                    state.blocks.push(new_block);
-                    state.mode = Mode::ScanForBlocks;
-                }
-                e => panic!("unexpected mode {:?}", e),
-            }
-        },
         Mode::AccumulateBlocks(mut blocks) => {
             state.mode = Mode::AccumulateInlines(Vec::new());
             walk_children(state, node);
