@@ -68,6 +68,9 @@ fn render_block(buf: &mut Buf, block: &Block) {
         Block::Blockquote(blockquote) => {
             render_blockquote(buf, blockquote);
         }
+        Block::ThematicBreak => {
+            render_thematic_break(buf);
+        }
     }
     writeln!(buf);
 }
@@ -136,4 +139,8 @@ fn render_blockquote(buf: &mut Buf, item: &Blockquote) {
         render_block(buf, block);
     }
     writeln!(buf, "</blockquote>");
+}
+
+fn render_thematic_break(buf: &mut Buf) {
+    writeln!(buf, "<hr/>");
 }

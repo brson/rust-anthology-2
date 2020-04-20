@@ -22,6 +22,7 @@ pub enum Block {
     Paragraph(Paragraph),
     List(List),
     Blockquote(Blockquote),
+    ThematicBreak,
 }
 
 #[derive(Debug)]

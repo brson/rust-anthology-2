@@ -71,6 +71,10 @@ fn walk(state: &mut State, node: &Node) {
                     handle_blockquote(state, node);
                     return;
                 }
+                "hr" => {
+                    handle_thematic_break(state, node);
+                    return;
+                }
                 _ => {
                 }
             }
@@ -359,6 +363,22 @@ fn handle_blockquote(state: &mut State, node: &Node) {
         }
         _ => {
             //warn!("unhandled blockquote item")
+            state.mode = old_mode;
+            walk_children(state, node);
+        }
+    }
+}
+
+fn handle_thematic_break(state: &mut State, _node: &Node) {
+    match state.mode {
+        Mode::ScanForBlocks => {
+            state.blocks.push(doc::Block::ThematicBreak);
+        },
+        Mode::AccumulateBlocks(ref mut blocks) => {
+            blocks.push(doc::Block::ThematicBreak);
+        }
+        _ => {
+            //warn!("unhandled thematic break")
         }
     }
 }
