@@ -1,6 +1,7 @@
 use std::io::Write;
 use anyhow::Result;
 use crate::doc::*;
+use v_htmlescape::escape;
 
 pub fn to_string(doc: &Document) -> Result<String> {
     let mut buf = Vec::new();
@@ -68,7 +69,7 @@ fn render_paragraph(buf: &mut Buf, para: &Paragraph) {
 fn render_inline(buf: &mut Buf, inline: &Inline) {
     match inline {
         Inline::Text(text) => {
-            write!(buf, "{}", text);
+            write!(buf, "{}", escape(text));
         }
         _ => {
             panic!()
