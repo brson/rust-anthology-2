@@ -19,6 +19,7 @@ mod doc;
 mod convert;
 mod sanitize;
 mod render;
+mod assets;
 
 #[derive(StructOpt, Debug)]
 struct Opts {
@@ -36,6 +37,7 @@ enum Command {
     ExtractArticle(ExtractArticle),
     ConvertArticle(ConvertArticle),
     RenderArticle(RenderArticle),
+    CopyAssets(CopyAssets),
 }
 
 #[derive(StructOpt, Debug)]
@@ -64,6 +66,9 @@ struct RenderArticle {
     #[structopt(long)]
     to_file: bool,
 }
+
+#[derive(StructOpt, Debug)]
+struct CopyAssets { }
 
 #[derive(StructOpt, Debug)]
 struct GlobalOpts {
@@ -122,6 +127,9 @@ fn main() -> Result<()> {
         }
         Command::RenderArticle(cmd) => {
             run_render_article(CmdOpts { global_opts, config, cmd })
+        }
+        Command::CopyAssets(cmd) => {
+            run_copy_assets(CmdOpts { global_opts, config, cmd })
         }
     }
 }
@@ -219,4 +227,14 @@ fn run_render_article(cmd: CmdOpts<RenderArticle>) -> Result<()> {
         }
         Ok(())
     })
+}
+
+fn run_copy_assets(cmd: CmdOpts<CopyAssets>) -> Result<()> {
+    let render_dir = cmd.global_opts.data_dir.join("render");
+    let css_dir = render_dir.join("css");
+    let dirs = assets::AssetDirs {
+        css_dir
+    };
+
+    assets::copy(&dirs)
 }
