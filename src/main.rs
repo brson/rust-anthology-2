@@ -42,6 +42,7 @@ enum Command {
     RenderArticle(RenderArticle),
     CopyAssets(CopyAssets),
     ExtractTitle(ExtractTitle),
+    GenerateFileName(GenerateFileName),
 }
 
 #[derive(StructOpt, Debug)]
@@ -76,6 +77,11 @@ struct CopyAssets { }
 
 #[derive(StructOpt, Debug)]
 struct ExtractTitle {
+    url_regex: String,
+}
+
+#[derive(StructOpt, Debug)]
+struct GenerateFileName {
     url_regex: String,
 }
 
@@ -132,6 +138,9 @@ fn main() -> Result<()> {
         }
         Command::ExtractTitle(cmd) => {
             run_extract_title(CmdOpts { global_opts, config, cmd })
+        }
+        Command::GenerateFileName(cmd) => {
+            run_generate_file_name(CmdOpts { global_opts, config, cmd })
         }
     }
 }
@@ -250,6 +259,31 @@ fn run_extract_title(cmd: CmdOpts<ExtractTitle>) -> Result<()> {
                 match title {
                     Some(title) => {
                         info!("title: {}", title);
+                    },
+                    None => {
+                        error!("no title found");
+                    }
+                }
+            }
+            Err(e) => {
+                error!("{}", e);
+            }
+        }
+        Ok(())
+    })
+}
+
+fn run_generate_file_name(cmd: CmdOpts<GenerateFileName>) -> Result<()> {
+    for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|meta, post| {
+        match html::extract_article(&post) {
+            Ok(dom) => {
+                let doc = convert::from_dom(&meta, &dom);
+                let doc = sanitize::sanitize(doc);
+                let title = extract::title(&doc);
+                match title {
+                    Some(title) => {
+                        let file_name = sanitize::title_to_file_name(title);
+                        info!("file name: {}", file_name);
                     },
                     None => {
                         error!("no title found");
