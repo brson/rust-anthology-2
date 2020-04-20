@@ -16,6 +16,7 @@ mod http_cache;
 mod html;
 mod doc;
 mod convert;
+mod sanitize;
 mod render;
 
 #[derive(StructOpt, Debug)]
@@ -194,6 +195,7 @@ fn run_render_article(cmd: CmdOpts<RenderArticle>) -> Result<()> {
         match html::extract_article(&post) {
             Ok(dom) => {
                 let doc = convert::from_dom(&meta, &dom)?;
+                let doc = sanitize::sanitize(doc);
                 let doc = render::to_string(&doc)?;
                 info!("{}", doc);
             }

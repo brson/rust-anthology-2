@@ -18,12 +18,12 @@ pub struct Body {
 
 #[derive(Debug)]
 pub enum Block {
-    Header(Header),
+    Heading(Heading),
     Paragraph(Paragraph),
 }
 
 #[derive(Debug)]
-pub struct Header {
+pub struct Heading {
     text: String,
 }
 
