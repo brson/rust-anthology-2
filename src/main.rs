@@ -1,5 +1,6 @@
 #![allow(unused)]
 
+use std::cell::RefCell;
 use std::fs;
 use reqwest::StatusCode;
 use reqwest::blocking::Client as HttpClient;
@@ -23,6 +24,7 @@ mod render;
 mod assets;
 mod config;
 mod extract;
+mod index;
 
 #[derive(StructOpt, Debug)]
 struct Opts {
@@ -43,6 +45,7 @@ enum Command {
     CopyAssets(CopyAssets),
     ExtractTitle(ExtractTitle),
     GenerateFileName(GenerateFileName),
+    WriteIndex(WriteIndex),
 }
 
 #[derive(StructOpt, Debug)]
@@ -82,6 +85,11 @@ struct ExtractTitle {
 
 #[derive(StructOpt, Debug)]
 struct GenerateFileName {
+    url_regex: String,
+}
+
+#[derive(StructOpt, Debug)]
+struct WriteIndex {
     url_regex: String,
 }
 
@@ -142,6 +150,9 @@ fn main() -> Result<()> {
         }
         Command::GenerateFileName(cmd) => {
             run_generate_file_name(CmdOpts { global_opts, config, cmd })
+        }
+        Command::WriteIndex(cmd) => {
+            run_write_index(CmdOpts { global_opts, config, cmd })
         }
     }
 }
@@ -306,4 +317,33 @@ fn run_generate_file_name(cmd: CmdOpts<GenerateFileName>) -> Result<()> {
         }
         Ok(())
     })
+}
+
+fn run_write_index(cmd: CmdOpts<WriteIndex>) -> Result<()> {
+    let data = RefCell::new(Vec::new());
+    for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|meta, post| {
+        match html::extract_article(&post) {
+            Ok(dom) => {
+                let doc = convert::from_dom(&meta, &dom);
+                let doc = sanitize::sanitize(doc);
+                let title = extract::title(&doc);
+                match title {
+                    Some(title) => {
+                        let file_name = sanitize::title_to_file_name(title.clone());
+                        data.borrow_mut().push((title, file_name));
+                    },
+                    None => {
+                        error!("no title found");
+                    }
+                }
+            }
+            Err(e) => {
+                error!("{}", e);
+            }
+        }
+        Ok(())
+    });
+
+    index::write(&cmd.global_opts.data_dir, data.into_inner())?;
+    Ok(())
 }
