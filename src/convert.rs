@@ -242,25 +242,25 @@ fn handle_text(state: &mut State, node: &Node, text: String) {
 }
 
 fn handle_list(state: &mut State, node: &Node, type_: doc::ListType) {
-    match state.mode {
+    let old_mode = mem::replace(&mut state.mode, Mode::Placeholder);
+    match old_mode {
         Mode::ScanForBlocks => {
             state.mode = Mode::AccumulateListItems(Vec::new());
             walk_children(state, node);
-            let mode = mem::replace(&mut state.mode, Mode::ScanForBlocks);
+            let mode = mem::replace(&mut state.mode, Mode::Placeholder);
             match mode {
                 Mode::AccumulateListItems(items) => {
-                    let new_list = doc::List {
-                        type_,
-                        items,
-                    };
+                    let new_list = doc::List { type_, items };
                     let new_block = doc::Block::List(new_list);
                     state.blocks.push(new_block);
+                    state.mode = Mode::ScanForBlocks;
                 },
                 e => panic!("unexpected mode {:?}", e),
             }
         }
         _ => {
             //warn!("unhandled list");
+            state.mode = old_mode;
             walk_children(state, node);
         }
     }
