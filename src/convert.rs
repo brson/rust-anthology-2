@@ -92,6 +92,67 @@ fn walk_children(state: &mut State, node: &Node) {
     }
 }
 
+/// Our model requires the root, list items, and blockquotes to contain block
+/// items, where HTML allows them to contain inlines directly. This detects this
+/// situation and opens paragraph blocks that don't exist in the source HTML.
+fn walk_block_children(state: &mut State, node: &Node) {
+    let need_block = match state.mode {
+        Mode::AccumulateBlocks(_) => true,
+        _ => false,
+    };
+    assert!(need_block);
+
+    let mut next_inlines = Vec::new();
+    
+    for child in node.children.borrow().iter() {
+        if is_inline_element(child) {
+            let old_mode = mem::replace(&mut state.mode, Mode::Placeholder);
+            state.mode = Mode::AccumulateInlines(Vec::new());
+            walk(state, child);
+            let mode = mem::replace(&mut state.mode, Mode::Placeholder);
+            match mode {
+                Mode::AccumulateInlines(inlines) => {
+                    next_inlines.extend(inlines);
+                    state.mode = old_mode;
+                }
+                _ => panic!("unexpected mode {:?}", mode),
+            }
+        } else {
+            if !next_inlines.is_empty() {
+                let new_block = doc::Block::Paragraph(
+                    doc::Paragraph {
+                        inlines: next_inlines,
+                    }
+                );
+                next_inlines = Vec::new();
+                match state.mode {
+                    Mode::AccumulateBlocks(ref mut blocks) => {
+                        blocks.push(new_block);
+                    }
+                    _ => panic!()
+                }
+            }
+
+            walk(state, child)
+        }
+    }
+
+    if !next_inlines.is_empty() {
+        let new_block = doc::Block::Paragraph(
+            doc::Paragraph {
+                inlines: next_inlines,
+            }
+        );
+        next_inlines = Vec::new();
+        match state.mode {
+            Mode::AccumulateBlocks(ref mut blocks) => {
+                blocks.push(new_block);
+            }
+            _ => panic!()
+        }
+    }
+}
+
 fn is_inline_element(node: &Node) -> bool {
     match &node.data {
         NodeData::Element { name, .. } => {
@@ -245,7 +306,7 @@ fn handle_list_item(state: &mut State, node: &Node) {
     match old_mode {
         Mode::AccumulateListItems(mut items) => {
             state.mode = Mode::AccumulateBlocks(Vec::new());
-            walk_children(state, node);
+            walk_block_children(state, node);
             let mode = mem::replace(&mut state.mode, Mode::Placeholder);
             match mode {
                 Mode::AccumulateBlocks(blocks) => {
