@@ -5,7 +5,7 @@ use crate::html::SubDom;
 use markup5ever_rcdom as rcdom;
 use rcdom::{Node as Node, NodeData};
 use crate::doc;
-use log::warn;
+use log::{warn, debug};
 
 pub fn from_dom(post: &BlogPost, dom: &SubDom) -> Result<doc::Document> {
     let mut state = State {
@@ -42,6 +42,9 @@ enum Mode {
 }
 
 fn walk(state: &mut State, node: &Node) {
+    /*if maybe_synthesize_para(state, node) {
+        return;
+    }*/
     match &node.data {
         NodeData::Element { name, .. } => {
             let name = name.local.as_ref();
@@ -60,9 +63,11 @@ fn walk(state: &mut State, node: &Node) {
                 }
                 "ul" => {
                     handle_list(state, node, doc::ListType::Unordered);
+                    return;
                 }
                 "li" => {
                     handle_list_item(state, node);
+                    return;
                 }
                 _ => {
                 }
@@ -83,6 +88,51 @@ fn walk(state: &mut State, node: &Node) {
 fn walk_children(state: &mut State, node: &Node) {
     for child in node.children.borrow().iter() {
         walk(state, &child);
+    }
+}
+
+/// Our model requires the root, list items, and blockquotes to contain block
+/// items, where HTML allows them to contain inlines directly. This detects this
+/// situation and opens paragraph blocks that don't exist in the source HTML.
+fn maybe_synthesize_para(state: &mut State, node: &Node) -> bool {
+    let want_blocks = match state.mode {
+        Mode::ScanForBlocks => true,
+        Mode::AccumulateBlocks { .. } => true,
+        _ => false,
+    };
+
+    if !want_blocks {
+        return false;
+    }
+
+    if is_inline_element(node) {
+        debug!("creating synthetic paragraph");
+        handle_para(state, node);
+        true
+    } else {
+        false
+    }
+}
+
+fn is_inline_element(node: &Node) -> bool {
+    match &node.data {
+        NodeData::Element { name, .. } => {
+            let name = name.local.as_ref();
+            match name {
+                "a" => {
+                    true
+                }
+                _ => {
+                    false
+                }
+            }
+        }
+        NodeData::Text { .. } => {
+            true
+        }
+        _ => {
+            false
+        }
     }
 }
 
@@ -197,7 +247,7 @@ fn handle_list(state: &mut State, node: &Node, type_: doc::ListType) {
 }
 
 fn handle_list_item(state: &mut State, node: &Node) {
-    let old_mode = mem::replace(&mut state.mode, Mode::Placeholder);
+    /*let old_mode = mem::replace(&mut state.mode, Mode::Placeholder);
     match old_mode {
         Mode::AccumulateListItems(mut items) => {
             state.mode = Mode::AccumulateBlocks(Vec::new());
@@ -216,5 +266,6 @@ fn handle_list_item(state: &mut State, node: &Node) {
             //warn!("unhandled list item");
             walk_children(state, node);
         }
-    }
+}*/
+    walk_children(state, node);
 }
