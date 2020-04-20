@@ -76,7 +76,7 @@ struct GlobalOpts {
     data_dir: PathBuf,
 }
 
-static CONFIG: &'static str = include_str!("config.toml");
+static CONFIG: &'static str = include_str!("../config/config.toml");
 static RENDER_DIR: &'static str = "render";
 
 #[derive(Deserialize, Debug)]
