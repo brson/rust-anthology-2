@@ -43,13 +43,6 @@ enum Mode {
 }
 
 fn walk(state: &mut State, node: &Node) {
-    if maybe_synthesize_para(state, node) {
-        return;
-    }
-    walk_(state, node);
-}
-
-fn walk_(state: &mut State, node: &Node) {
     match &node.data {
         NodeData::Element { name, .. } => {
             let name = name.local.as_ref();
@@ -99,29 +92,6 @@ fn walk_children(state: &mut State, node: &Node) {
     }
 }
 
-/// Our model requires the root, list items, and blockquotes to contain block
-/// items, where HTML allows them to contain inlines directly. This detects this
-/// situation and opens paragraph blocks that don't exist in the source HTML.
-fn maybe_synthesize_para(state: &mut State, node: &Node) -> bool {
-    let want_blocks = match state.mode {
-        Mode::ScanForBlocks => true,
-        Mode::AccumulateBlocks { .. } => true,
-        _ => false,
-    };
-
-    if !want_blocks {
-        return false;
-    }
-
-    if !is_inline_element(node) {
-        return false;
-    }
-
-    handle_para_(state, node, true);
-
-    true
-}
-
 fn is_inline_element(node: &Node) -> bool {
     match &node.data {
         NodeData::Element { name, .. } => {
@@ -146,19 +116,11 @@ fn is_inline_element(node: &Node) -> bool {
 }
 
 fn handle_para(state: &mut State, node: &Node) {
-    handle_para_(state, node, false)
-}
-
-fn handle_para_(state: &mut State, node: &Node, current_is_first_inline: bool) {
     let old_mode = mem::replace(&mut state.mode, Mode::Placeholder);
     match old_mode {
         Mode::ScanForBlocks => {
             state.mode = Mode::AccumulateInlines(Vec::new());
-            if !current_is_first_inline {
-                walk_children(state, node);
-            } else {
-                walk_(state, node);
-            }
+            walk_children(state, node);
             let mode = mem::replace(&mut state.mode, Mode::Placeholder);
             match mode {
                 Mode::AccumulateInlines(inlines) => {
@@ -172,11 +134,7 @@ fn handle_para_(state: &mut State, node: &Node, current_is_first_inline: bool) {
         },
         Mode::AccumulateBlocks(mut blocks) => {
             state.mode = Mode::AccumulateInlines(Vec::new());
-            if !current_is_first_inline {
-                walk_children(state, node);
-            } else {
-                walk_(state, node);
-            }
+            walk_children(state, node);
             let mode = mem::replace(&mut state.mode, Mode::Placeholder);
             match mode {
                 Mode::AccumulateInlines(inlines) => {
@@ -189,7 +147,6 @@ fn handle_para_(state: &mut State, node: &Node, current_is_first_inline: bool) {
             }
         }
         _ => {
-            assert!(!current_is_first_inline);
             //warn!("unhandled para");
             state.mode = old_mode;
             walk_children(state, node);
