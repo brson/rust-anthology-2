@@ -67,7 +67,19 @@ fn render_block(buf: &mut Buf, block: &Block) {
 }
 
 fn render_heading(buf: &mut Buf, heading: &Heading) {
-    panic!()
+    let lvl = match heading.level {
+        HeadingLevel::H1 => "h1",
+        HeadingLevel::H2 => "h2",
+        HeadingLevel::H3 => "h3",
+        HeadingLevel::H4 => "h4",
+        HeadingLevel::H5 => "h5",
+        HeadingLevel::H6 => "h6",
+    };
+    writeln!(buf, "<{}>", lvl);
+    for inline in &heading.inlines {
+        render_inline(buf, inline);
+    }
+    writeln!(buf, "</{}>", lvl);
 }
 
 fn render_paragraph(buf: &mut Buf, para: &Paragraph) {

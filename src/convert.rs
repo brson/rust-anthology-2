@@ -40,11 +40,15 @@ enum Mode {
 fn walk(state: &mut State, node: &Node) {
     match &node.data {
         NodeData::Element { name, .. } => {
-            match name.local.as_ref() {
+            let name = name.local.as_ref();
+            match name {
                 "p" => {
                     handle_para(state, node);
                     return;
                 },
+                "h1" | "h2" | "h3" | "h4" | "h5" | "h6" => {
+                    handle_heading(state, node, name);
+                }
                 _ => {
                 }
             }
@@ -59,6 +63,41 @@ fn walk(state: &mut State, node: &Node) {
     }
 
     walk_children(state, node);
+}
+
+fn handle_heading(state: &mut State, node: &Node, htext: &str) {
+    let level = match htext {
+        "h1" => doc::HeadingLevel::H1,
+        "h2" => doc::HeadingLevel::H2,
+        "h3" => doc::HeadingLevel::H3,
+        "h4" => doc::HeadingLevel::H4,
+        "h5" => doc::HeadingLevel::H5,
+        "h6" => doc::HeadingLevel::H6,
+        _ => panic!("unexpected heading level"),
+    };
+    match state.mode {
+        Mode::ScanForBlocks => {
+            state.mode = Mode::AccumulateInlines(Vec::new());
+            walk_children(state, node);
+            let mode = mem::replace(&mut state.mode, Mode::ScanForBlocks);
+            match mode {
+                Mode::AccumulateInlines(inlines) => {
+                    let new_heading = doc::Heading {
+                        inlines,
+                        level,
+                    };
+                    let new_block = doc::Block::Heading(new_heading);
+                    state.blocks.push(new_block);
+                }
+                _ => {
+                    panic!("unexpected mode");
+                }
+            }
+        }
+        _ => {
+            walk_children(state, node);
+        }
+    }
 }
 
 fn handle_para(state: &mut State, node: &Node) {
@@ -81,6 +120,7 @@ fn handle_para(state: &mut State, node: &Node) {
             }
         },
         _ => {
+            walk_children(state, node);
         }
     }
 }

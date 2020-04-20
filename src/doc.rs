@@ -24,7 +24,13 @@ pub enum Block {
 
 #[derive(Debug)]
 pub struct Heading {
-    text: String,
+    pub inlines: Vec<Inline>,
+    pub level: HeadingLevel,
+}
+
+#[derive(Debug)]
+pub enum HeadingLevel {
+    H1, H2, H3, H4, H5, H6,
 }
 
 #[derive(Debug)]
