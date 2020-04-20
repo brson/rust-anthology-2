@@ -43,3 +43,12 @@ blockquote {
     font-size: 90%;
     padding-left: 2rem;
 }
+
+pre {
+    border: 1px solid gray;
+    padding: 1.5rem;
+}
+
+pre > code {
+    font-family: monospace;
+}

@@ -75,6 +75,10 @@ fn walk(state: &mut State, node: &Node) {
                     handle_thematic_break(state, node);
                     return;
                 }
+                "pre" => {
+                    handle_pre(state, node);
+                    return;
+                }
                 _ => {
                 }
             }
@@ -382,3 +386,49 @@ fn handle_thematic_break(state: &mut State, _node: &Node) {
         }
     }
 }
+
+fn handle_pre(state: &mut State, node: &Node) {
+    let old_mode = mem::replace(&mut state.mode, Mode::Placeholder);
+    match old_mode {
+        Mode::ScanForBlocks => {
+            state.mode = Mode::AccumulateInlines(Vec::new());
+            walk_children(state, node);
+            let mode = mem::replace(&mut state.mode, Mode::Placeholder);
+            match mode {
+                Mode::AccumulateInlines(inlines) => {
+                    let new_code_block = doc::CodeBlock {
+                        lang: doc::CodeLang::Unknown,
+                        inlines
+                    };
+                    let new_block = doc::Block::CodeBlock(new_code_block);
+                    state.blocks.push(new_block);
+                    state.mode = Mode::ScanForBlocks;
+                }
+                e => panic!("unexpected mode {:?}", e),
+            }
+        },
+        Mode::AccumulateBlocks(mut blocks) => {
+            state.mode = Mode::AccumulateInlines(Vec::new());
+            walk_children(state, node);
+            let mode = mem::replace(&mut state.mode, Mode::Placeholder);
+            match mode {
+                Mode::AccumulateInlines(inlines) => {
+                    let new_code_block = doc::CodeBlock {
+                        lang: doc::CodeLang::Unknown,
+                        inlines
+                    };
+                    let new_block = doc::Block::CodeBlock(new_code_block);
+                    blocks.push(new_block);
+                    state.mode = Mode::AccumulateBlocks(blocks);
+                }
+                e => panic!("unexpected mode {:?}", e),
+            }
+        }
+        _ => {
+            //warn!("unhandled para");
+            state.mode = old_mode;
+            walk_children(state, node);
+        }
+    }
+}
+

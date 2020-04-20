@@ -149,5 +149,9 @@ fn render_thematic_break(buf: &mut Buf) {
 }
 
 fn render_code_block(buf: &mut Buf, code_block: &CodeBlock) {
-    panic!()
+    write!(buf, "<pre><code>");
+    for inline in &code_block.inlines {
+        render_inline(buf, inline);
+    }
+    writeln!(buf, "</code></pre>");
 }
