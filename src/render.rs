@@ -33,9 +33,13 @@ fn render_head(buf: &mut Buf, meta: &Meta) {
 fn render_body(buf: &mut Buf, body: &Body) {
     writeln!(buf);
     writeln!(buf, "<body>");
+    writeln!(buf, "<main>");
+    writeln!(buf, "<article>");
     for block in &body.blocks {
         render_block(buf, block);
     }
+    writeln!(buf, "</article>");
+    writeln!(buf, "</main>");
     writeln!(buf, "</body>");
     writeln!(buf);
 }
