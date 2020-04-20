@@ -16,6 +16,7 @@ mod http_cache;
 mod html;
 mod doc;
 mod convert;
+mod render;
 
 #[derive(StructOpt, Debug)]
 struct Opts {
@@ -32,6 +33,7 @@ enum Command {
     WalkTags(WalkTagsCmd),
     ExtractArticle(ExtractArticle),
     ConvertArticle(ConvertArticle),
+    RenderArticle(RenderArticle),
 }
 
 #[derive(StructOpt, Debug)]
@@ -51,6 +53,11 @@ struct ExtractArticle {
 
 #[derive(StructOpt, Debug)]
 struct ConvertArticle {
+    url_regex: String,
+}
+
+#[derive(StructOpt, Debug)]
+struct RenderArticle {
     url_regex: String,
 }
 
@@ -108,6 +115,9 @@ fn main() -> Result<()> {
         }
         Command::ConvertArticle(cmd) => {
             run_convert_article(CmdOpts { global_opts, config, cmd })
+        }
+        Command::RenderArticle(cmd) => {
+            run_render_article(CmdOpts { global_opts, config, cmd })
         }
     }
 }
@@ -170,6 +180,22 @@ fn run_convert_article(cmd: CmdOpts<ConvertArticle>) -> Result<()> {
             Ok(dom) => {
                 let doc = convert::from_dom(&meta, &dom)?;
                 info!("{:#?}", doc);
+            }
+            Err(e) => {
+                error!("{}", e);
+            }
+        }
+        Ok(())
+    })
+}
+
+fn run_render_article(cmd: CmdOpts<RenderArticle>) -> Result<()> {
+    for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|meta, post| {
+        match html::extract_article(&post) {
+            Ok(dom) => {
+                let doc = convert::from_dom(&meta, &dom)?;
+                let doc = render::to_string(&doc)?;
+                info!("{}", doc);
             }
             Err(e) => {
                 error!("{}", e);
