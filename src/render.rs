@@ -18,13 +18,21 @@ fn render_doc(buf: &mut Buf, assets: &AssetDirs, doc: &Document) {
     writeln!(buf, "<!doctype html>");
     writeln!(buf, "<html lang='en'>");
 
-    render_head(buf, assets, &doc.meta);
+    let header_meta = HeaderMeta {
+        title: None,
+    };
+    
+    render_head(buf, assets, &header_meta);
     render_body(buf, &doc.body);
 
     writeln!(buf, "</html>");
 }    
 
-fn render_head(buf: &mut Buf, assets: &AssetDirs, meta: &Meta) {
+pub struct HeaderMeta {
+    pub title: Option<String>,
+}
+
+pub fn render_head(buf: &mut impl Write, assets: &AssetDirs, meta: &HeaderMeta) {
     let reset_file = assets.css_dir.join(RESET_CSS_FILE);
     let main_file = assets.css_dir.join(MAIN_CSS_FILE);
     let blog_file = assets.css_dir.join(BLOG_CSS_FILE);
@@ -32,6 +40,9 @@ fn render_head(buf: &mut Buf, assets: &AssetDirs, meta: &Meta) {
     writeln!(buf);
     writeln!(buf, "<head>");
     writeln!(buf, "  <meta charset='utf-8'>");
+    if let Some(title) = meta.title.as_ref() {
+        writeln!(buf, "  <title>{}</title>", title);
+    }
     writeln!(buf, "  <link rel='stylesheet' href='{}'>", reset_file.display());
     writeln!(buf, "  <link rel='stylesheet' href='{}'>", main_file.display());
     writeln!(buf, "  <link rel='stylesheet' href='{}'>", blog_file.display());

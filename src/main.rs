@@ -320,6 +320,9 @@ fn run_generate_file_name(cmd: CmdOpts<GenerateFileName>) -> Result<()> {
 }
 
 fn run_write_index(cmd: CmdOpts<WriteIndex>) -> Result<()> {
+    let assets = assets::AssetDirs {
+        css_dir: PathBuf::from("./css/"),
+    };
     let data = RefCell::new(Vec::new());
     for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|meta, post| {
         match html::extract_article(&post) {
@@ -344,6 +347,7 @@ fn run_write_index(cmd: CmdOpts<WriteIndex>) -> Result<()> {
         Ok(())
     });
 
-    index::write(&cmd.global_opts.data_dir, data.into_inner())?;
+    let render_dir = cmd.global_opts.data_dir.join(RENDER_DIR);
+    index::write(&render_dir, &assets, data.into_inner())?;
     Ok(())
 }
