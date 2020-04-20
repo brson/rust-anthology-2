@@ -46,6 +46,10 @@ fn walk(state: &mut State, node: &Node) {
     if maybe_synthesize_para(state, node) {
         return;
     }
+    walk_(state, node);
+}
+
+fn walk_(state: &mut State, node: &Node) {
     match &node.data {
         NodeData::Element { name, .. } => {
             let name = name.local.as_ref();
@@ -106,13 +110,13 @@ fn maybe_synthesize_para(state: &mut State, node: &Node) -> bool {
         return false;
     }
 
-    if is_inline_element(node) {
-        debug!("creating synthetic paragraph");
-        handle_para(state, node);
-        true
-    } else {
-        false
+    if !is_inline_element(node) {
+        return false;
     }
+
+    handle_para_(state, node, true);
+
+    true
 }
 
 fn is_inline_element(node: &Node) -> bool {
@@ -134,6 +138,58 @@ fn is_inline_element(node: &Node) -> bool {
         }
         _ => {
             false
+        }
+    }
+}
+
+fn handle_para(state: &mut State, node: &Node) {
+    handle_para_(state, node, false)
+}
+
+fn handle_para_(state: &mut State, node: &Node, current_is_first_inline: bool) {
+    let old_mode = mem::replace(&mut state.mode, Mode::Placeholder);
+    match old_mode {
+        Mode::ScanForBlocks => {
+            state.mode = Mode::AccumulateInlines(Vec::new());
+            if !current_is_first_inline {
+                walk_children(state, node);
+            } else {
+                walk_(state, node);
+            }
+            let mode = mem::replace(&mut state.mode, Mode::Placeholder);
+            match mode {
+                Mode::AccumulateInlines(inlines) => {
+                    let new_para = doc::Paragraph { inlines };
+                    let new_block = doc::Block::Paragraph(new_para);
+                    state.blocks.push(new_block);
+                    state.mode = Mode::ScanForBlocks;
+                }
+                e => panic!("unexpected mode {:?}", e),
+            }
+        },
+        Mode::AccumulateBlocks(mut blocks) => {
+            state.mode = Mode::AccumulateInlines(Vec::new());
+            if !current_is_first_inline {
+                walk_children(state, node);
+            } else {
+                walk_(state, node);
+            }
+            let mode = mem::replace(&mut state.mode, Mode::Placeholder);
+            match mode {
+                Mode::AccumulateInlines(inlines) => {
+                    let new_para = doc::Paragraph { inlines };
+                    let new_block = doc::Block::Paragraph(new_para);
+                    blocks.push(new_block);
+                    state.mode = Mode::AccumulateBlocks(blocks);
+                }
+                e => panic!("unexpected mode {:?}", e),
+            }
+        }
+        _ => {
+            assert!(!current_is_first_inline);
+            //warn!("unhandled para");
+            state.mode = old_mode;
+            walk_children(state, node);
         }
     }
 }
@@ -167,45 +223,6 @@ fn handle_heading(state: &mut State, node: &Node, htext: &str) {
         }
         _ => {
             //warn!("unhandled heading");
-            walk_children(state, node);
-        }
-    }
-}
-
-fn handle_para(state: &mut State, node: &Node) {
-    let old_mode = mem::replace(&mut state.mode, Mode::Placeholder);
-    match old_mode {
-        Mode::ScanForBlocks => {
-            state.mode = Mode::AccumulateInlines(Vec::new());
-            walk_children(state, node);
-            let mode = mem::replace(&mut state.mode, Mode::Placeholder);
-            match mode {
-                Mode::AccumulateInlines(inlines) => {
-                    let new_para = doc::Paragraph { inlines };
-                    let new_block = doc::Block::Paragraph(new_para);
-                    state.blocks.push(new_block);
-                    state.mode = Mode::ScanForBlocks;
-                }
-                e => panic!("unexpected mode {:?}", e),
-            }
-        },
-        Mode::AccumulateBlocks(mut blocks) => {
-            state.mode = Mode::AccumulateInlines(Vec::new());
-            walk_children(state, node);
-            let mode = mem::replace(&mut state.mode, Mode::Placeholder);
-            match mode {
-                Mode::AccumulateInlines(inlines) => {
-                    let new_para = doc::Paragraph { inlines };
-                    let new_block = doc::Block::Paragraph(new_para);
-                    blocks.push(new_block);
-                    state.mode = Mode::AccumulateBlocks(blocks);
-                }
-                e => panic!("unexpected mode {:?}", e),
-            }
-        }
-        _ => {
-            //warn!("unhandled para");
-            state.mode = old_mode;
             walk_children(state, node);
         }
     }
