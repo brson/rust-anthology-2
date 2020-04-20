@@ -258,6 +258,20 @@ fn handle_list(state: &mut State, node: &Node, type_: doc::ListType) {
                 e => panic!("unexpected mode {:?}", e),
             }
         }
+        Mode::AccumulateBlocks(mut blocks) => {
+            state.mode = Mode::AccumulateListItems(Vec::new());
+            walk_children(state, node);
+            let mode = mem::replace(&mut state.mode, Mode::Placeholder);
+            match mode {
+                Mode::AccumulateListItems(items) => {
+                    let new_list = doc::List { type_, items };
+                    let new_block = doc::Block::List(new_list);
+                    blocks.push(new_block);
+                    state.mode = Mode::AccumulateBlocks(blocks);
+                },
+                e => panic!("unexpected mode {:?}", e),
+            }
+        }
         _ => {
             //warn!("unhandled list");
             state.mode = old_mode;
