@@ -45,9 +45,9 @@ pub struct Paragraph {
 #[derive(Debug)]
 pub enum Inline {
     Text(String),
-    Bold(Box<Inline>),
-    Italic(Box<Inline>),
-    Code(Box<Inline>),
+    Bold(Vec<Inline>),
+    Italic(Vec<Inline>),
+    Code(Vec<Inline>),
 }
 
 #[derive(Debug)]

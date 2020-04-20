@@ -108,8 +108,26 @@ fn render_inline(buf: &mut Buf, inline: &Inline) {
         Inline::Text(text) => {
             write!(buf, "{}", escape(text));
         }
-        _ => {
-            panic!()
+        Inline::Bold(inlines) => {
+            write!(buf, "<strong>");
+            for inline in inlines {
+                render_inline(buf, inline);
+            }
+            write!(buf, "</strong>");
+        }
+        Inline::Italic(inlines) => {
+            write!(buf, "<em>");
+            for inline in inlines {
+                render_inline(buf, inline);
+            }
+            write!(buf, "</em>");
+        }
+        Inline::Code(inlines) => {
+            write!(buf, "<code>");
+            for inline in inlines {
+                render_inline(buf, inline);
+            }
+            write!(buf, "</code>");
         }
     }
 }

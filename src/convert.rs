@@ -5,7 +5,7 @@ use crate::html::SubDom;
 use markup5ever_rcdom as rcdom;
 use rcdom::{Node as Node, NodeData};
 use crate::doc;
-use log::{warn, debug};
+use log::{warn, debug, error};
 
 pub fn from_dom(post: &BlogPost, dom: &SubDom) -> Result<doc::Document> {
     let mut state = State {
@@ -83,6 +83,10 @@ fn walk(state: &mut State, node: &Node) {
                 }
                 "pre" => {
                     handle_pre(state, node);
+                    return;
+                }
+                "em" | "strong" | "i" | "b" | "code" => {
+                    handle_emph(state, node, name);
                     return;
                 }
                 _ => {
@@ -379,3 +383,41 @@ fn handle_pre(state: &mut State, node: &Node) {
     }
 }
 
+fn handle_emph(state: &mut State, node: &Node, name: &str) {
+    let old_mode = mem::replace(&mut state.mode, Mode::Placeholder);
+    match old_mode {
+        Mode::AccumulateInlines(mut inlines) => {
+            state.mode = Mode::AccumulateInlines(Vec::new());
+            walk_children(state, node);
+            let mode = mem::replace(&mut state.mode, Mode::Placeholder);
+            match mode {
+                Mode::AccumulateInlines(new_inlines) => {
+                    match name {
+                        "em" | "i" => {
+                            let new_inline = doc::Inline::Italic(new_inlines);
+                            inlines.push(new_inline);
+                        }
+                        "strong" | "b" => {
+                            let new_inline = doc::Inline::Bold(new_inlines);
+                            inlines.push(new_inline);
+                        }
+                        "code" => {
+                            let new_inline = doc::Inline::Code(new_inlines);
+                            inlines.push(new_inline);
+                        }
+                        _ => {
+                            panic!("unexpected tag {}", name);
+                        }
+                    }
+                    state.mode = Mode::AccumulateInlines(inlines);
+                }
+                _ => panic!("unexpected mode {:?}", mode),
+            }
+        }
+        _ => {
+            //warn!("unhandled emph");
+            state.mode = old_mode;
+            walk_children(state, node);
+        }
+    }
+}

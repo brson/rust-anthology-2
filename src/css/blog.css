@@ -51,6 +51,14 @@ pre {
     overflow: auto;
 }
 
-pre > code {
+code {
     font-family: monospace;
+}
+
+em, i {
+    font-style: italic;
+}
+
+strong, b {
+    font-weight: bold;
 }
