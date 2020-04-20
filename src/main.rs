@@ -26,12 +26,12 @@ struct Opts {
 #[derive(StructOpt, Debug)]
 enum Command {
     DumpConfig,
-    FetchMatching(FetchMatchingCmd),
+    Fetch(FetchCmd),
     WalkTags(WalkTagsCmd),
 }
 
 #[derive(StructOpt, Debug)]
-struct FetchMatchingCmd {
+struct FetchCmd {
     url_regex: String,
 }
 
@@ -83,8 +83,8 @@ fn main() -> Result<()> {
             info!("config: {:#?}", config);
             Ok(())
         }
-        Command::FetchMatching(cmd) => {
-            run_fetch_matching(CmdOpts { global_opts, config, cmd })
+        Command::Fetch(cmd) => {
+            run_fetch(CmdOpts { global_opts, config, cmd })
         }
         Command::WalkTags(cmd) => {
             run_walk_tags(CmdOpts { global_opts, config, cmd })
@@ -97,7 +97,7 @@ fn load_config(s: &str) -> Result<Config> {
         .context("parsing config")
 }
 
-fn run_fetch_matching(cmd: CmdOpts<FetchMatchingCmd>) -> Result<()> {
+fn run_fetch(cmd: CmdOpts<FetchCmd>) -> Result<()> {
     for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|post| {
         info!("{}", post);
         Ok(())
