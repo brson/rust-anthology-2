@@ -1,5 +1,6 @@
 #![allow(unused)]
 
+use regex::Regex;
 use std::io::Write;
 use url::Url;
 use serde::Deserialize;
@@ -19,6 +20,12 @@ struct Opts {
 #[derive(StructOpt, Debug)]
 enum Command {
     DumpConfig,
+    FetchMatching(FetchMatchingCmd),
+}
+
+#[derive(StructOpt, Debug)]
+struct FetchMatchingCmd {
+    url_regex: String,
 }
 
 #[derive(StructOpt, Debug)]
@@ -39,6 +46,12 @@ struct BlogPost {
     url: Url,
 }
 
+struct CmdOpts<T> {
+    global_opts: GlobalOpts,
+    config: Config,
+    cmd: T,
+}
+
 fn main() -> Result<()> {
     let env = env_logger::Env::new().default_filter_or("info");
     env_logger::Builder::from_env(env)
@@ -49,18 +62,25 @@ fn main() -> Result<()> {
 
     debug!("opts: {:#?}", opts);
 
+    let global_opts = opts.global_opts;
     let config = load_config(CONFIG)?;
 
     match opts.command {
         Command::DumpConfig => {
             info!("config: {:#?}", config);
+            Ok(())
+        }
+        Command::FetchMatching(cmd) => {
+            run_fetch_matching(CmdOpts { global_opts, config, cmd })
         }
     }
-
-    Ok(())
 }
 
 fn load_config(s: &str) -> Result<Config> {
     toml::from_str(s)
         .context("parsing config")
+}
+
+fn run_fetch_matching(cmd: CmdOpts<FetchMatchingCmd>) -> Result<()> {
+    panic!()
 }
