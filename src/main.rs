@@ -77,6 +77,7 @@ struct GlobalOpts {
 }
 
 static CONFIG: &'static str = include_str!("config.toml");
+static RENDER_DIR: &'static str = "render";
 
 #[derive(Deserialize, Debug)]
 struct Config {
@@ -202,17 +203,21 @@ fn run_convert_article(cmd: CmdOpts<ConvertArticle>) -> Result<()> {
 }
 
 fn run_render_article(cmd: CmdOpts<RenderArticle>) -> Result<()> {
+    let assets = assets::AssetDirs {
+        css_dir: PathBuf::from("./css/"),
+    };
+    
     for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|meta, post| {
         match html::extract_article(&post) {
             Ok(dom) => {
                 let doc = convert::from_dom(&meta, &dom)?;
                 let doc = sanitize::sanitize(doc);
-                let doc = render::to_string(&doc)?;
+                let doc = render::to_string(&assets, &doc)?;
                 if !cmd.cmd.to_file {
                     info!("{}", doc);
                 } else {
                     let hash = http_cache::url_hash(&meta.url);
-                    let render_dir = cmd.global_opts.data_dir.join("renders");
+                    let render_dir = cmd.global_opts.data_dir.join(RENDER_DIR);
                     let render_file = render_dir.join(format!("{}.html", hash));
                     fs::create_dir_all(&render_dir)
                         .context("creating render dir")?;
@@ -230,7 +235,7 @@ fn run_render_article(cmd: CmdOpts<RenderArticle>) -> Result<()> {
 }
 
 fn run_copy_assets(cmd: CmdOpts<CopyAssets>) -> Result<()> {
-    let render_dir = cmd.global_opts.data_dir.join("render");
+    let render_dir = cmd.global_opts.data_dir.join(RENDER_DIR);
     let css_dir = render_dir.join("css");
     let dirs = assets::AssetDirs {
         css_dir

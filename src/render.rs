@@ -2,30 +2,39 @@ use std::io::Write;
 use anyhow::Result;
 use crate::doc::*;
 use v_htmlescape::escape;
+use crate::assets::AssetDirs;
+use crate::assets::{RESET_CSS_FILE, MAIN_CSS_FILE, BLOG_CSS_FILE};
 
-pub fn to_string(doc: &Document) -> Result<String> {
+pub fn to_string(assets: &AssetDirs, doc: &Document) -> Result<String> {
     let mut buf = Vec::new();
-    render_doc(&mut buf, doc);
+    render_doc(&mut buf, assets, doc);
 
     Ok(String::from_utf8(buf)?)
 }
 
 type Buf = Vec<u8>;
 
-fn render_doc(buf: &mut Buf, doc: &Document) {
+fn render_doc(buf: &mut Buf, assets: &AssetDirs, doc: &Document) {
     writeln!(buf, "<!doctype html>");
     writeln!(buf, "<html lang='en'>");
 
-    render_head(buf, &doc.meta);
+    render_head(buf, assets, &doc.meta);
     render_body(buf, &doc.body);
 
     writeln!(buf, "</html>");
 }    
 
-fn render_head(buf: &mut Buf, meta: &Meta) {
+fn render_head(buf: &mut Buf, assets: &AssetDirs, meta: &Meta) {
+    let reset_file = assets.css_dir.join(RESET_CSS_FILE);
+    let main_file = assets.css_dir.join(MAIN_CSS_FILE);
+    let blog_file = assets.css_dir.join(BLOG_CSS_FILE);
+
     writeln!(buf);
     writeln!(buf, "<head>");
     writeln!(buf, "  <meta charset='utf-8'>");
+    writeln!(buf, "  <link rel='stylesheet' href='{}'>", reset_file.display());
+    writeln!(buf, "  <link rel='stylesheet' href='{}'>", main_file.display());
+    writeln!(buf, "  <link rel='stylesheet' href='{}'>", blog_file.display());
     writeln!(buf, "</head>");
     writeln!(buf);
 }
