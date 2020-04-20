@@ -23,6 +23,7 @@ pub enum Block {
     List(List),
     Blockquote(Blockquote),
     ThematicBreak,
+    CodeBlock(CodeBlock),
 }
 
 #[derive(Debug)]
@@ -68,4 +69,16 @@ pub struct ListItem {
 #[derive(Debug)]
 pub struct Blockquote {
     pub blocks: Vec<Block>,
+}
+
+#[derive(Debug)]
+pub struct CodeBlock {
+    pub lang: CodeLang,
+    pub inlines: Vec<Inline>,
+}
+
+#[derive(Debug)]
+pub enum CodeLang {
+    Rust,
+    Unknown,
 }

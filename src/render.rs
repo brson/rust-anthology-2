@@ -71,6 +71,9 @@ fn render_block(buf: &mut Buf, block: &Block) {
         Block::ThematicBreak => {
             render_thematic_break(buf);
         }
+        Block::CodeBlock(code_block) => {
+            render_code_block(buf, code_block);
+        }
     }
     writeln!(buf);
 }
@@ -133,9 +136,9 @@ fn render_list_item(buf: &mut Buf, item: &ListItem) {
     writeln!(buf, "</li>");
 }
 
-fn render_blockquote(buf: &mut Buf, item: &Blockquote) {
+fn render_blockquote(buf: &mut Buf, bq: &Blockquote) {
     writeln!(buf, "<blockquote>");
-    for block in &item.blocks {
+    for block in &bq.blocks {
         render_block(buf, block);
     }
     writeln!(buf, "</blockquote>");
@@ -143,4 +146,8 @@ fn render_blockquote(buf: &mut Buf, item: &Blockquote) {
 
 fn render_thematic_break(buf: &mut Buf) {
     writeln!(buf, "<hr/>");
+}
+
+fn render_code_block(buf: &mut Buf, code_block: &CodeBlock) {
+    panic!()
 }
