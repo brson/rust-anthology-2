@@ -13,6 +13,7 @@ use std::path::PathBuf;
 use crate::http_cache::HttpCache;
 
 mod http_cache;
+mod html;
 
 #[derive(StructOpt, Debug)]
 struct Opts {
@@ -26,10 +27,16 @@ struct Opts {
 enum Command {
     DumpConfig,
     FetchMatching(FetchMatchingCmd),
+    WalkTags(WalkTagsCmd),
 }
 
 #[derive(StructOpt, Debug)]
 struct FetchMatchingCmd {
+    url_regex: String,
+}
+
+#[derive(StructOpt, Debug)]
+struct WalkTagsCmd {
     url_regex: String,
 }
 
@@ -79,6 +86,9 @@ fn main() -> Result<()> {
         Command::FetchMatching(cmd) => {
             run_fetch_matching(CmdOpts { global_opts, config, cmd })
         }
+        Command::WalkTags(cmd) => {
+            run_walk_tags(CmdOpts { global_opts, config, cmd })
+        }
     }
 }
 
@@ -88,21 +98,34 @@ fn load_config(s: &str) -> Result<Config> {
 }
 
 fn run_fetch_matching(cmd: CmdOpts<FetchMatchingCmd>) -> Result<()> {
-    let regex = Regex::new(&cmd.cmd.url_regex)
+    for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|post| {
+        info!("{}", post);
+        Ok(())
+    })
+}
+
+type PostHandler = dyn Fn(String) -> Result<()>;
+
+fn for_each_post(opts: &GlobalOpts, config: &Config, url_regex: &str, f: &PostHandler) -> Result<()> {
+    let regex = Regex::new(url_regex)
         .context("building regex")?;
-    let cache_dir = cmd.global_opts.data_dir.join("http-cache");
+    let cache_dir = opts.data_dir.join("http-cache");
     let mut client = HttpCache::new(cache_dir);
-    for post in &cmd.config.blog_posts {
+
+    for post in &config.blog_posts {
         if regex.is_match(&post.url.as_str()) {
             info!("fetching {}", post.url);
-            let page = client.get(&post.url);
-            match page {
-                Ok(page) => info!("{}", page),
-                Err(err) => error!("error: {}", err),
-            }
+            let page = client.get(&post.url)?;
+            f(page)?;
         }
     }
     
     Ok(())
 }
 
+fn run_walk_tags(cmd: CmdOpts<WalkTagsCmd>) -> Result<()> {
+    for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|post| {
+        html::walk_tags(&post)?;
+        Ok(())
+    })
+}
