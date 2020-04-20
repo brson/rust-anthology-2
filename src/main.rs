@@ -12,6 +12,7 @@ use anyhow::{Result, Context, bail, anyhow};
 use structopt::StructOpt;
 use std::path::PathBuf;
 use crate::http_cache::HttpCache;
+use crate::config::{load_config, Config, BlogPost};
 
 mod http_cache;
 mod html;
@@ -20,6 +21,7 @@ mod convert;
 mod sanitize;
 mod render;
 mod assets;
+mod config;
 
 #[derive(StructOpt, Debug)]
 struct Opts {
@@ -76,18 +78,7 @@ struct GlobalOpts {
     data_dir: PathBuf,
 }
 
-static CONFIG: &'static str = include_str!("../config/config.toml");
 static RENDER_DIR: &'static str = "render";
-
-#[derive(Deserialize, Debug)]
-struct Config {
-    blog_posts: Vec<BlogPost>,
-}
-
-#[derive(Deserialize, Debug)]
-pub struct BlogPost {
-    url: Url,
-}
 
 struct CmdOpts<T> {
     global_opts: GlobalOpts,
@@ -107,7 +98,7 @@ fn main() -> Result<()> {
     debug!("opts: {:#?}", opts);
 
     let global_opts = opts.global_opts;
-    let config = load_config(CONFIG)?;
+    let config = load_config()?;
 
     match opts.command {
         Command::DumpConfig => {
@@ -133,11 +124,6 @@ fn main() -> Result<()> {
             run_copy_assets(CmdOpts { global_opts, config, cmd })
         }
     }
-}
-
-fn load_config(s: &str) -> Result<Config> {
-    toml::from_str(s)
-        .context("parsing config")
 }
 
 fn run_fetch(cmd: CmdOpts<FetchCmd>) -> Result<()> {
