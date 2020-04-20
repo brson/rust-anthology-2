@@ -28,6 +28,7 @@ enum Command {
     DumpConfig,
     Fetch(FetchCmd),
     WalkTags(WalkTagsCmd),
+    ExtractArticle(ExtractArticle),
 }
 
 #[derive(StructOpt, Debug)]
@@ -37,6 +38,11 @@ struct FetchCmd {
 
 #[derive(StructOpt, Debug)]
 struct WalkTagsCmd {
+    url_regex: String,
+}
+
+#[derive(StructOpt, Debug)]
+struct ExtractArticle {
     url_regex: String,
 }
 
@@ -89,6 +95,9 @@ fn main() -> Result<()> {
         Command::WalkTags(cmd) => {
             run_walk_tags(CmdOpts { global_opts, config, cmd })
         }
+        Command::ExtractArticle(cmd) => {
+            run_extract_article(CmdOpts { global_opts, config, cmd })
+        }
     }
 }
 
@@ -126,6 +135,15 @@ fn for_each_post(opts: &GlobalOpts, config: &Config, url_regex: &str, f: &PostHa
 fn run_walk_tags(cmd: CmdOpts<WalkTagsCmd>) -> Result<()> {
     for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|post| {
         html::walk_tags(&post)?;
+        Ok(())
+    })
+}
+
+fn run_extract_article(cmd: CmdOpts<ExtractArticle>) -> Result<()> {
+    for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|post| {
+        if let Err(e) = html::extract_article(&post) {
+            error!("{}", e);
+        }
         Ok(())
     })
 }
