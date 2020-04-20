@@ -5,6 +5,7 @@ use crate::html::SubDom;
 use markup5ever_rcdom as rcdom;
 use rcdom::{Node as Node, NodeData};
 use crate::doc;
+use log::warn;
 
 pub fn from_dom(post: &BlogPost, dom: &SubDom) -> Result<doc::Document> {
     let mut state = State {
@@ -36,6 +37,8 @@ enum Mode {
     ScanForBlocks,
     AccumulateInlines(Vec<doc::Inline>),
     AccumulateListItems(Vec<doc::ListItem>),
+    AccumulateBlocks(Vec<doc::Block>),
+    Placeholder,
 }
 
 fn walk(state: &mut State, node: &Node) {
@@ -57,6 +60,9 @@ fn walk(state: &mut State, node: &Node) {
                 }
                 "ul" => {
                     handle_list(state, node, doc::ListType::Unordered);
+                }
+                "li" => {
+                    handle_list_item(state, node);
                 }
                 _ => {
                 }
@@ -108,6 +114,7 @@ fn handle_heading(state: &mut State, node: &Node, htext: &str) {
             }
         }
         _ => {
+            warn!("unhandled heading");
             walk_children(state, node);
         }
     }
@@ -131,6 +138,7 @@ fn handle_para(state: &mut State, node: &Node) {
             }
         },
         _ => {
+            warn!("unhandled para");
             walk_children(state, node);
         }
     }
@@ -143,6 +151,7 @@ fn handle_text(state: &mut State, node: &Node, text: String) {
             inlines.push(new);
         }
         _ => {
+            warn!("unhandled text");
         }
     }
     walk_children(state, node);
@@ -168,10 +177,30 @@ fn handle_list(state: &mut State, node: &Node, type_: doc::ListType) {
         }
         _ => {
             warn!("unhandled list");
+            walk_children(state, node);
         }
     }
-
-    walk_children(state, node);
 }
 
-
+fn handle_list_item(state: &mut State, node: &Node) {
+    let old_mode = mem::replace(&mut state.mode, Mode::Placeholder);
+    match old_mode {
+        Mode::AccumulateListItems(mut items) => {
+            state.mode = Mode::AccumulateBlocks(Vec::new());
+            walk_children(state, node);
+            let mode = mem::replace(&mut state.mode, Mode::Placeholder);
+            match mode {
+                Mode::AccumulateBlocks(blocks) => {
+                    let new_item = doc::ListItem { blocks };
+                    items.push(new_item);
+                    state.mode = Mode::AccumulateListItems(items);
+                },
+                _ => panic!("unexpected mode"),
+            }
+        },
+        _ => {
+            warn!("unhandled list item");
+            walk_children(state, node);
+        }
+    }
+}
