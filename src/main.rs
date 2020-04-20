@@ -14,6 +14,8 @@ use crate::http_cache::HttpCache;
 
 mod http_cache;
 mod html;
+mod doc;
+mod convert;
 
 #[derive(StructOpt, Debug)]
 struct Opts {
@@ -29,6 +31,7 @@ enum Command {
     Fetch(FetchCmd),
     WalkTags(WalkTagsCmd),
     ExtractArticle(ExtractArticle),
+    ConvertArticle(ConvertArticle),
 }
 
 #[derive(StructOpt, Debug)]
@@ -47,6 +50,11 @@ struct ExtractArticle {
 }
 
 #[derive(StructOpt, Debug)]
+struct ConvertArticle {
+    url_regex: String,
+}
+
+#[derive(StructOpt, Debug)]
 struct GlobalOpts {
     #[structopt(default_value = "./data")]
     data_dir: PathBuf,
@@ -60,7 +68,7 @@ struct Config {
 }
 
 #[derive(Deserialize, Debug)]
-struct BlogPost {
+pub struct BlogPost {
     url: Url,
 }
 
@@ -98,6 +106,9 @@ fn main() -> Result<()> {
         Command::ExtractArticle(cmd) => {
             run_extract_article(CmdOpts { global_opts, config, cmd })
         }
+        Command::ConvertArticle(cmd) => {
+            run_convert_article(CmdOpts { global_opts, config, cmd })
+        }
     }
 }
 
@@ -107,13 +118,13 @@ fn load_config(s: &str) -> Result<Config> {
 }
 
 fn run_fetch(cmd: CmdOpts<FetchCmd>) -> Result<()> {
-    for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|post| {
+    for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|_, post| {
         info!("{}", post);
         Ok(())
     })
 }
 
-type PostHandler = dyn Fn(String) -> Result<()>;
+type PostHandler = dyn Fn(&BlogPost, String) -> Result<()>;
 
 fn for_each_post(opts: &GlobalOpts, config: &Config, url_regex: &str, f: &PostHandler) -> Result<()> {
     let regex = Regex::new(url_regex)
@@ -125,7 +136,7 @@ fn for_each_post(opts: &GlobalOpts, config: &Config, url_regex: &str, f: &PostHa
         if regex.is_match(&post.url.as_str()) {
             info!("fetching {}", post.url);
             let page = client.get(&post.url)?;
-            f(page)?;
+            f(&post, page)?;
         }
     }
     
@@ -133,16 +144,36 @@ fn for_each_post(opts: &GlobalOpts, config: &Config, url_regex: &str, f: &PostHa
 }
 
 fn run_walk_tags(cmd: CmdOpts<WalkTagsCmd>) -> Result<()> {
-    for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|post| {
+    for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|_, post| {
         html::walk_tags(&post)?;
         Ok(())
     })
 }
 
 fn run_extract_article(cmd: CmdOpts<ExtractArticle>) -> Result<()> {
-    for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|post| {
-        if let Err(e) = html::extract_article(&post) {
-            error!("{}", e);
+    for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|_, post| {
+        match html::extract_article_string(&post) {
+            Ok(s) => {
+                info!("{}", s);
+            }
+            Err(e) => {
+                error!("{}", e);
+            }
+        }
+        Ok(())
+    })
+}
+
+fn run_convert_article(cmd: CmdOpts<ConvertArticle>) -> Result<()> {
+    for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|meta, post| {
+        match html::extract_article(&post) {
+            Ok(dom) => {
+                let doc = convert::from_dom(&meta, &dom)?;
+                info!("{:#?}", doc);
+            }
+            Err(e) => {
+                error!("{}", e);
+            }
         }
         Ok(())
     })

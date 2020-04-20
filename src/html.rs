@@ -1,5 +1,5 @@
 use std::iter;
-use log::{info, warn, error};
+use log::{info, warn, error, debug};
 use std::io::Cursor;
 use anyhow::{Result, Context, bail};
 use std::default::Default;
@@ -16,20 +16,26 @@ pub fn walk_tags(src: &str) -> Result<()> {
     Ok(())
 }
 
-pub fn extract_article(src: &str) -> Result<()> {
+pub fn extract_article_string(src: &str) -> Result<String> {
+    let (dom, node) = extract_article(src)?;
+    let s = serialize_dom(&node)
+        .context("serializing dom")?;
+    Ok(s)
+}
+
+pub type SubDom = (RcDom, Handle);
+
+pub fn extract_article(src: &str) -> Result<SubDom> {
     let dom = build_dom(src)?;
     let node = find_article(&dom.document);
     match node {
         Some(node) => {
-            let s = serialize_dom(&node)
-                .context("serializing dom")?;
-            info!("{}", s);
+            Ok((dom, node))
         }
         None => {
             bail!("no article found");
         }
     }
-    Ok(())
 }
 
 fn build_dom(src: &str) -> Result<RcDom> {
