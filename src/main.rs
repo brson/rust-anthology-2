@@ -1,8 +1,10 @@
 #![allow(unused)]
 
+use std::io::Write;
+use url::Url;
 use serde::Deserialize;
-use log::{info, debug};
-use anyhow::Result;
+use log::{info, debug, error};
+use anyhow::{Result, Context};
 use structopt::StructOpt;
 use std::path::PathBuf;
 
@@ -11,7 +13,7 @@ struct Opts {
     #[structopt(subcommand)]
     command: Command,
     #[structopt(flatten)]
-    gopts: GlobalOpts,
+    global_opts: GlobalOpts,
 }
 
 #[derive(StructOpt, Debug)]
@@ -25,14 +27,23 @@ struct GlobalOpts {
     data_dir: PathBuf,
 }
 
-#[derive(Deserialize)]
-struct Config {
-}
-
 static CONFIG: &'static str = include_str!("config.toml");
 
+#[derive(Deserialize, Debug)]
+struct Config {
+    blog_posts: Vec<BlogPost>,
+}
+
+#[derive(Deserialize, Debug)]
+struct BlogPost {
+    url: Url,
+}
+
 fn main() -> Result<()> {
-    env_logger::init();
+    let env = env_logger::Env::new().default_filter_or("info");
+    env_logger::Builder::from_env(env)
+        .format_timestamp(None)
+        .init();
 
     let opts = Opts::from_args();
 
@@ -40,9 +51,16 @@ fn main() -> Result<()> {
 
     let config = load_config(CONFIG)?;
 
+    match opts.command {
+        Command::DumpConfig => {
+            info!("config: {:#?}", config);
+        }
+    }
+
     Ok(())
 }
 
 fn load_config(s: &str) -> Result<Config> {
-    panic!()
+    toml::from_str(s)
+        .context("parsing config")
 }
