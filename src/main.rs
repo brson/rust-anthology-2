@@ -92,6 +92,7 @@ struct GlobalOpts {
 }
 
 static RENDER_DIR: &'static str = "render";
+static POST_DIR: &'static str = "p";
 
 struct CmdOpts<T> {
     global_opts: GlobalOpts,
@@ -209,7 +210,7 @@ fn run_convert_article(cmd: CmdOpts<ConvertArticle>) -> Result<()> {
 
 fn run_render_article(cmd: CmdOpts<RenderArticle>) -> Result<()> {
     let assets = assets::AssetDirs {
-        css_dir: PathBuf::from("./css/"),
+        css_dir: PathBuf::from("../css/"),
     };
     
     for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|meta, post| {
@@ -217,18 +218,27 @@ fn run_render_article(cmd: CmdOpts<RenderArticle>) -> Result<()> {
             Ok(dom) => {
                 let doc = convert::from_dom(&meta, &dom);
                 let doc = sanitize::sanitize(doc);
+                let title = extract::title(&doc);
                 let doc = render::to_string(&assets, &doc)?;
                 if !cmd.cmd.to_file {
                     info!("{}", doc);
                 } else {
-                    let hash = http_cache::url_hash(&meta.url);
-                    let render_dir = cmd.global_opts.data_dir.join(RENDER_DIR);
-                    let render_file = render_dir.join(format!("{}.html", hash));
-                    fs::create_dir_all(&render_dir)
-                        .context("creating render dir")?;
-                    fs::write(&render_file, doc)
-                        .context("writing rendered doc")?;
-                    info!("rendered at {}", render_file.display());
+                    match title {
+                        Some(title) => {
+                            let file_name = sanitize::title_to_file_name(title);
+                            let render_dir = cmd.global_opts.data_dir.join(RENDER_DIR);
+                            let post_dir = render_dir.join(POST_DIR);
+                            let render_file = post_dir.join(format!("{}.html", file_name));
+                            fs::create_dir_all(&post_dir)
+                                .context("creating post dir")?;
+                            fs::write(&render_file, doc)
+                                .context("writing rendered doc")?;
+                            info!("rendered at {}", render_file.display());
+                        }
+                        None => {
+                            error!("unable to extract title");
+                        }
+                    }
                 }
             }
             Err(e) => {
