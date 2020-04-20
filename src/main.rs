@@ -1,11 +1,13 @@
 #![allow(unused)]
 
+use reqwest::StatusCode;
+use reqwest::blocking::Client as HttpClient;
 use regex::Regex;
 use std::io::Write;
 use url::Url;
 use serde::Deserialize;
 use log::{info, debug, error};
-use anyhow::{Result, Context};
+use anyhow::{Result, Context, bail, anyhow};
 use structopt::StructOpt;
 use std::path::PathBuf;
 
@@ -82,5 +84,24 @@ fn load_config(s: &str) -> Result<Config> {
 }
 
 fn run_fetch_matching(cmd: CmdOpts<FetchMatchingCmd>) -> Result<()> {
-    panic!()
+    let regex = Regex::new(&cmd.cmd.url_regex)
+        .context("building regex")?;
+    let mut client = HttpClient::new();
+    for post in &cmd.config.blog_posts {
+        if regex.is_match(&post.url.as_str()) {
+            let page = fetch_url(&mut client, &post.url)?;
+        }
+    }
+    
+    Ok(())
+}
+
+fn fetch_url(client: &mut HttpClient, url: &Url) -> Result<String> {
+    let resp = client.get(url.clone()).send()?;
+    if resp.status().is_success() {
+        Ok(resp.text()
+            .context("parsing response as text")?)
+    } else {
+        Err(anyhow!("failed to fetch url {}", url))
+    }
 }
