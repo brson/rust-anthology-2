@@ -4,10 +4,10 @@ use url::Url;
 use serde::{Serialize, Deserialize};
 use anyhow::{Result, Context};
 
-static BLOG_FILE: &'static str = "./config/blog-posts-old.toml";
+static BLOG_FILE_OLD: &'static str = "./config/blog-posts-old.toml";
 
 pub fn load_config_old() -> Result<ConfigOld> {
-    let blogs = fs::read_to_string(BLOG_FILE)
+    let blogs = fs::read_to_string(BLOG_FILE_OLD)
         .context("reading blog file")?;
     toml::from_str(&blogs)
         .context("parsing config")
@@ -18,7 +18,14 @@ pub struct ConfigOld {
     pub blog_urls: Vec<Url>,
 }
 
-static BLOG_FILE_2: &'static str = "./config/blog-posts-2.toml";
+static BLOG_FILE: &'static str = "./config/blog-posts.toml";
+
+pub fn load_config() -> Result<Config> {
+    let blogs = fs::read_to_string(BLOG_FILE)
+        .context("reading blog file")?;
+    toml::from_str(&blogs)
+        .context("parsing config")
+}
 
 pub fn convert() -> Result<()> {
     let config = load_config_old()?;
@@ -31,28 +38,28 @@ pub fn convert() -> Result<()> {
         }
     });
 
-    let config2 = Config2 { blog_posts: posts.collect() };
+    let config2 = Config { blog_posts: posts.collect() };
 
     let toml = toml::to_string(&config2)?;
 
-    fs::write(BLOG_FILE_2, &toml)
+    fs::write(BLOG_FILE, &toml)
         .context("writing blog-posts-2")?;
 
     Ok(())
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct Config2 {
-    blog_posts: Vec<BlogPost>,
+pub struct Config {
+    pub blog_posts: Vec<BlogPost>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct BlogPost {
-    url: Url,
+    pub url: Url,
     #[serde(default)]
-    category: Category,
+    pub category: Category,
     #[serde(default)]
-    broken: bool,
+    pub broken: bool,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

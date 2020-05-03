@@ -14,7 +14,7 @@ use anyhow::{Result, Context, bail, anyhow};
 use structopt::StructOpt;
 use std::path::PathBuf;
 use crate::http_cache::HttpCache;
-use crate::config::{load_config_old, ConfigOld};
+use crate::config::{load_config, Config, BlogPost};
 
 mod http_cache;
 mod html;
@@ -109,7 +109,7 @@ static POST_DIR: &'static str = "p";
 
 struct CmdOpts<T> {
     global_opts: GlobalOpts,
-    config: ConfigOld,
+    config: Config,
     cmd: T,
 }
 
@@ -125,7 +125,7 @@ fn main() -> Result<()> {
     debug!("opts: {:#?}", opts);
 
     let global_opts = opts.global_opts;
-    let config = load_config_old()?;
+    let config = load_config()?;
 
     match opts.command {
         Command::DumpConfig => {
@@ -173,21 +173,21 @@ fn run_fetch(cmd: CmdOpts<FetchCmd>) -> Result<()> {
     })
 }
 
-type PostHandler<'a> = dyn Fn(&Url, String) -> Result<()> + 'a;
+type PostHandler<'a> = dyn Fn(&BlogPost, String) -> Result<()> + 'a;
 
-fn for_each_post(opts: &GlobalOpts, config: &ConfigOld, url_regex: &str, f: &PostHandler) -> Result<()> {
+fn for_each_post(opts: &GlobalOpts, config: &Config, url_regex: &str, f: &PostHandler) -> Result<()> {
     let regex = Regex::new(url_regex)
         .context("building regex")?;
     let cache_dir = opts.data_dir.join("http-cache");
     let mut client = HttpCache::new(cache_dir);
 
-    for url in &config.blog_urls {
-        if regex.is_match(&url.as_str()) {
-            info!("fetching {}", url);
-            let page = client.get(url);
+    for post in &config.blog_posts {
+        if regex.is_match(&post.url.as_str()) {
+            info!("fetching {}", post.url);
+            let page = client.get(&post.url);
             match page {
                 Ok(page) => {
-                    f(url, page)?;
+                    f(post, page)?;
                 }
                 Err(e) => {
                     error!("error: {}", e);
