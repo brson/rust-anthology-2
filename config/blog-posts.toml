@@ -146,17 +146,6 @@ url = "http://huonw.github.io/blog/2015/05/travis-on-the-train-part-2/"
 url = "http://kamalmarhubi.com/blog/2016/04/13/rust-nix-easier-unix-systems-programming-3/"
 
 [[blog_posts]]
-url = "https://manishearth.github.io/blog/2016/01/03/making-your-open-source-project-newcomer-friendly/"
-category = "Culture"
-
-[[blog_posts]]
-url = "https://manishearth.github.io/blog/2017/01/11/rust-tidbits-what-is-a-lang-item/"
-category = "Internals"
-
-[[blog_posts]]
-url = "https://manishearth.github.io/blog/2017/01/14/stop-ascribing-meaning-to-unicode-code-points/"
-
-[[blog_posts]]
 url = "http://patshaughnessy.net/2018/3/15/how-rust-implements-tagged-unions"
 
 [[blog_posts]]
@@ -480,32 +469,53 @@ url = "https://lucumr.pocoo.org/2020/1/1/async-pressure/"
 [[blog_posts]]
 url = "https://manishearth.github.io/blog/2015/05/03/where-rust-really-shines/"
 category = "Ownership"
+publish = true
 
 [[blog_posts]]
 url = "https://manishearth.github.io/blog/2015/05/17/the-problem-with-shared-mutability/"
 category = "Ownership"
+publish = true
 
 [[blog_posts]]
 url = "https://manishearth.github.io/blog/2015/05/27/wrapper-types-in-rust-choosing-your-guarantees/"
 category = "Ownership"
+publish = true
 
 [[blog_posts]]
 url = "https://manishearth.github.io/blog/2015/05/30/how-rust-achieves-thread-safety/"
 category = "ConcurrencyAndParallelism"
+publish = true
+
+[[blog_posts]]
+url = "https://manishearth.github.io/blog/2016/01/03/making-your-open-source-project-newcomer-friendly/"
+category = "Culture"
+publish = true
 
 [[blog_posts]]
 url = "https://manishearth.github.io/blog/2016/12/02/reflections-on-rusting-trust/"
 category = "Internals"
 
 [[blog_posts]]
+url = "https://manishearth.github.io/blog/2017/01/11/rust-tidbits-what-is-a-lang-item/"
+category = "Internals"
+publish = true
+
+[[blog_posts]]
+url = "https://manishearth.github.io/blog/2017/01/14/stop-ascribing-meaning-to-unicode-code-points/"
+publish = true
+
+[[blog_posts]]
 url = "https://manishearth.github.io/blog/2017/01/15/breaking-our-latin-1-assumptions/"
+publish = true
 
 [[blog_posts]]
 url = "https://manishearth.github.io/blog/2017/03/04/what-are-sum-product-and-pi-types/"
 category = "Language"
+publish = true
 
 [[blog_posts]]
 url = "https://manishearth.github.io/blog/2017/03/18/inhtpinhtpamaa/"
+publish = true
 
 [[blog_posts]]
 url = "https://matklad.github.io/2020/02/14/why-rust-is-loved.html"

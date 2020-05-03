@@ -100,6 +100,9 @@ struct WriteIndex {
 struct GlobalOpts {
     #[structopt(default_value = "./data")]
     data_dir: PathBuf,
+    /// Process posts that aren't marked for publication
+    #[structopt(long)]
+    unpublished: bool,
 }
 
 #[derive(StructOpt, Debug)]
@@ -183,6 +186,11 @@ fn for_each_post(opts: &GlobalOpts, config: &Config, url_regex: &str, f: &PostHa
     let mut client = HttpCache::new(cache_dir);
 
     for post in &config.blog_posts {
+        let publish = post.publish || opts.unpublished;
+        if !publish {
+            debug!("skipping {}", post.url);
+            continue;
+        }
         if regex.is_match(&post.url.as_str()) {
             info!("fetching {}", post.url);
             let page = client.get(&post.url);

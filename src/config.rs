@@ -34,7 +34,7 @@ pub fn convert() -> Result<()> {
         BlogPost {
             url,
             category: Default::default(),
-            broken: Default::default(),
+            publish: Default::default(),
         }
     });
 
@@ -59,7 +59,7 @@ pub struct BlogPost {
     #[serde(default)]
     pub category: Category,
     #[serde(default)]
-    pub broken: bool,
+    pub publish: bool,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
