@@ -46,6 +46,7 @@ enum Command {
     ExtractTitle(ExtractTitle),
     GenerateFileName(GenerateFileName),
     WriteIndex(WriteIndex),
+    ConvertTmp(ConvertTmp),
 }
 
 #[derive(StructOpt, Debug)]
@@ -98,6 +99,9 @@ struct GlobalOpts {
     #[structopt(default_value = "./data")]
     data_dir: PathBuf,
 }
+
+#[derive(StructOpt, Debug)]
+struct ConvertTmp { }
 
 static RENDER_DIR: &'static str = "render";
 static POST_DIR: &'static str = "p";
@@ -153,6 +157,10 @@ fn main() -> Result<()> {
         }
         Command::WriteIndex(cmd) => {
             run_write_index(CmdOpts { global_opts, config, cmd })
+        }
+        Command::ConvertTmp(cmd) => {
+            crate::config::convert()?;
+            Ok(())
         }
     }
 }

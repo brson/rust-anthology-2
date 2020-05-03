@@ -1,7 +1,7 @@
 use std::fs;
 use std::default::Default;
 use url::Url;
-use serde::{Deserialize};
+use serde::{Serialize, Deserialize};
 use anyhow::{Result, Context};
 
 static CONFIG: &'static str =
@@ -21,3 +21,48 @@ pub struct Config {
     pub blog_urls: Vec<Url>,
 }
 
+static BLOG_FILE_2: &'static str = "./config/blog-posts-2.toml";
+
+pub fn convert() -> Result<()> {
+    let config = load_config()?;
+
+    let posts = config.blog_urls.into_iter().map(|url| {
+        BlogPost {
+            url,
+            category: None,
+            broken: None,            
+        }
+    });
+
+    let config2 = Config2 { blog_posts: posts.collect() };
+
+    let toml = toml::to_string(&config2)?;
+
+    fs::write(BLOG_FILE_2, &toml)
+        .context("writing blog-posts-2")?;
+
+    Ok(())
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Config2 {
+    blog_posts: Vec<BlogPost>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct BlogPost {
+    url: Url,
+    category: Option<Category>,
+    broken: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub enum Category {
+    Uncategorized,
+}
+
+impl Default for Category {
+    fn default() -> Category {
+        Category::Uncategorized
+    }
+}
