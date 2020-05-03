@@ -2,3 +2,13 @@
 name = "Niko Matsakis"
 github = "nikomatsakis"
 blog = "https://smallcultfollowing.com/babysteps/"
+
+[[authors]]
+name = "Manish Goregaokar"
+github = "manishearth"
+blog = "https://manishearth.github.io"
+
+[[authors]]
+name = "Brian Anderson"
+github = "brson"
+blog = "https://brson.github.io"

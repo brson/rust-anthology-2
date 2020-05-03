@@ -27,6 +27,7 @@ mod assets;
 mod config;
 mod extract;
 mod index;
+mod author;
 
 #[derive(StructOpt, Debug)]
 struct Opts {
@@ -48,6 +49,7 @@ enum Command {
     ExtractTitle(ExtractTitle),
     GenerateSlug(GenerateSlug),
     WriteIndex(WriteIndex),
+    CreateAuthorMaps(CreateAuthorMaps),
 }
 
 #[derive(StructOpt, Debug)]
@@ -93,6 +95,10 @@ struct GenerateSlug {
 #[derive(StructOpt, Debug)]
 struct WriteIndex {
     url_regex: String,
+}
+
+#[derive(StructOpt, Debug)]
+struct CreateAuthorMaps {
 }
 
 #[derive(StructOpt, Debug)]
@@ -158,6 +164,9 @@ fn main() -> Result<()> {
         }
         Command::WriteIndex(cmd) => {
             run_write_index(CmdOpts { global_opts, config, cmd })
+        }
+        Command::CreateAuthorMaps(cmd) => {
+            run_create_author_maps(CmdOpts { global_opts, config, cmd })
         }
     }
 }
@@ -371,5 +380,11 @@ fn run_write_index(cmd: CmdOpts<WriteIndex>) -> Result<()> {
 
     let render_dir = cmd.global_opts.data_dir.join(RENDER_DIR);
     index::write(&render_dir, &assets, data.into_inner())?;
+    Ok(())
+}
+
+fn run_create_author_maps(cmd: CmdOpts<CreateAuthorMaps>) -> Result<()> {
+    let maps = crate::author::create_author_maps(&cmd.config)?;
+    info!("{:#?}", maps);
     Ok(())
 }

@@ -112,7 +112,7 @@ pub struct AuthorsConfig {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Author {
-    name: String,
-    github: String,
-    blog: Url,
+    pub name: String,
+    pub github: Option<String>,
+    pub blog: Option<Url>,
 }

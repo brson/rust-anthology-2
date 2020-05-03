@@ -1,0 +1,42 @@
+use std::iter::FromIterator;
+use anyhow::Result;
+use std::collections::{HashMap, HashSet};
+use std::collections::hash_map::Entry;
+use url::Url;
+use crate::config::Config;
+
+pub fn create_author_maps(config: &Config) -> Result<AuthorMaps> {
+    let mut blog_post_author = HashMap::new();
+    let mut author_blog_posts = HashMap::new();
+
+    for post in &config.blog_posts {
+        for author in &config.authors {
+            if let Some(blog_url) = &author.blog {
+                if post.url.as_str().starts_with(blog_url.as_str()) {
+                    blog_post_author.insert(post.url.clone(), author.name.clone());
+
+                    match author_blog_posts.entry(author.name.clone()) {
+                        Entry::Vacant(v) => {
+                            v.insert(HashSet::from_iter(Some(post.url.clone())));
+                        }
+                        Entry::Occupied(mut v) => {
+                            v.get_mut().insert(post.url.clone());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    Ok(AuthorMaps {
+        blog_post_author, author_blog_posts
+    })
+}
+
+pub type AuthorName = String;
+
+#[derive(Debug)]
+pub struct AuthorMaps {
+    pub blog_post_author: HashMap<Url, AuthorName>,
+    pub author_blog_posts: HashMap<AuthorName, HashSet<Url>>,
+}

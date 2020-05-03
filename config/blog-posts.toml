@@ -53,11 +53,6 @@ url = "http://blog.rust-lang.org/2015/04/10/Fearless-Concurrency.html"
 url = "http://blog.skylight.io/rust-means-never-having-to-close-a-socket/"
 
 [[blog_posts]]
-url = "http://brson.github.io/2017/04/05/minimally-nice-maintainer"
-category = "Culture"
-publish = true
-
-[[blog_posts]]
 url = "http://carol-nichols.com/2015/08/01/rustc-discovery/"
 
 [[blog_posts]]
@@ -259,10 +254,14 @@ url = "https://brandur.org/fragments/rust-brick-walls"
 url = "https://brandur.org/rust-web"
 
 [[blog_posts]]
-url = "https://brson.github.io/2017/07/10/how-rust-is-tested"
+url = "https://brson.github.io/2017/04/05/minimally-nice-maintainer"
+category = "Culture"
+publish = true
 
 [[blog_posts]]
-url = "https://brson.github.io/styletest.html"
+url = "https://brson.github.io/2017/07/10/how-rust-is-tested"
+category = "Internals"
+publish = true
 
 [[blog_posts]]
 url = "https://cbreeden.github.io/Macros11/"
