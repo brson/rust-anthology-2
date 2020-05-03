@@ -29,8 +29,8 @@ pub fn convert() -> Result<()> {
     let posts = config.blog_urls.into_iter().map(|url| {
         BlogPost {
             url,
-            category: None,
-            broken: None,            
+            category: Default::default(),
+            broken: Default::default(),
         }
     });
 
@@ -52,8 +52,10 @@ pub struct Config2 {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct BlogPost {
     url: Url,
-    category: Option<Category>,
-    broken: Option<bool>,
+    #[serde(default)]
+    category: Category,
+    #[serde(default)]
+    broken: bool,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

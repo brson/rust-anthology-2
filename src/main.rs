@@ -1,5 +1,6 @@
 #![allow(unused)]
 
+use std::collections::HashMap;
 use std::cell::RefCell;
 use std::fs;
 use reqwest::StatusCode;
