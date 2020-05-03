@@ -350,6 +350,7 @@ fn run_write_index(cmd: CmdOpts<WriteIndex>) -> Result<()> {
         css_dir: PathBuf::from("./css/"),
     };
     let data = RefCell::new(Vec::new());
+
     for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|meta, post| {
         match html::extract_article(&post) {
             Ok(dom) => {
@@ -379,7 +380,8 @@ fn run_write_index(cmd: CmdOpts<WriteIndex>) -> Result<()> {
     });
 
     let render_dir = cmd.global_opts.data_dir.join(RENDER_DIR);
-    index::write(&render_dir, &assets, data.into_inner())?;
+    let author_maps = crate::author::create_author_maps(&cmd.config)?;
+    index::write(&render_dir, &assets, data.into_inner(), author_maps)?;
     Ok(())
 }
 

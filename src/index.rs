@@ -10,6 +10,7 @@ use crate::assets::AssetDirs;
 use crate::assets::{RESET_CSS_FILE, MAIN_CSS_FILE, BLOG_CSS_FILE};
 use crate::render;
 use crate::config::BlogPost;
+use crate::author::AuthorMaps;
 
 pub struct IndexEntry {
     pub post_meta: BlogPost,
@@ -19,7 +20,7 @@ pub struct IndexEntry {
 
 static TITLE: &'static str = "The Rust Docuverse";
 
-pub fn write(dir: &Path, assets: &AssetDirs, data: Vec<IndexEntry>) -> Result<()> {
+pub fn write(dir: &Path, assets: &AssetDirs, data: Vec<IndexEntry>, authors: AuthorMaps) -> Result<()> {
     fs::create_dir_all(dir)?;
     let index_file = dir.join("index.html");
     let mut file = File::create(&index_file)
@@ -33,7 +34,7 @@ pub fn write(dir: &Path, assets: &AssetDirs, data: Vec<IndexEntry>) -> Result<()
     };
         
     render::render_head(&mut file, assets, &header_meta);
-    write_body(&mut file, data)?;
+    write_body(&mut file, data, authors)?;
 
     writeln!(file, "</html>");
 
@@ -44,7 +45,7 @@ pub fn write(dir: &Path, assets: &AssetDirs, data: Vec<IndexEntry>) -> Result<()
 
 type Categories = BTreeMap<Category, Vec<IndexEntry>>;
 
-fn write_body(file: &mut File, entries: Vec<IndexEntry>) -> Result<()> {
+fn write_body(file: &mut File, entries: Vec<IndexEntry>, authors: AuthorMaps) -> Result<()> {
     let categories = categorize(entries);
 
     writeln!(file, "<body>");
@@ -54,11 +55,12 @@ fn write_body(file: &mut File, entries: Vec<IndexEntry>) -> Result<()> {
         writeln!(file, "<section>");
         writeln!(file, "<h2>{}</h2>", category);
         for entry in entries {
-            let title = entry.title;
-            let file_name = entry.file_name;
+            let title = &entry.title;
+            let file_name = &entry.file_name;
             writeln!(file, "<p>");
             writeln!(file, "<a href='./p/{}.html'>{}</a>",
                      file_name, title);
+            maybe_write_author(file, &entry, &authors)?;
             writeln!(file, "</p>");
         }
         writeln!(file, "</section>");
@@ -66,6 +68,15 @@ fn write_body(file: &mut File, entries: Vec<IndexEntry>) -> Result<()> {
     writeln!(file, "</main>");
     writeln!(file, "</body>");
 
+    Ok(())
+}
+
+fn maybe_write_author(file: &mut File, entry: &IndexEntry, authors: &AuthorMaps) -> Result<()> {
+    if let Some(name) = authors.blog_post_author.get(&entry.post_meta.url) {
+        writeln!(file, "<span>");
+        writeln!(file, "by {}", name);
+        writeln!(file, "</span>");
+    }
     Ok(())
 }
 
