@@ -50,6 +50,7 @@ enum Command {
     GenerateSlug(GenerateSlug),
     WriteIndex(WriteIndex),
     CreateAuthorMaps(CreateAuthorMaps),
+    WriteAuthorPages(WriteAuthorPages),
 }
 
 #[derive(StructOpt, Debug)]
@@ -99,6 +100,11 @@ struct WriteIndex {
 
 #[derive(StructOpt, Debug)]
 struct CreateAuthorMaps {
+}
+
+#[derive(StructOpt, Debug)]
+struct WriteAuthorPages {
+    url_regex: String,
 }
 
 #[derive(StructOpt, Debug)]
@@ -167,6 +173,9 @@ fn main() -> Result<()> {
         }
         Command::CreateAuthorMaps(cmd) => {
             run_create_author_maps(CmdOpts { global_opts, config, cmd })
+        }
+        Command::WriteAuthorPages(cmd) => {
+            run_write_author_pages(CmdOpts { global_opts, config, cmd })
         }
     }
 }
@@ -388,5 +397,46 @@ fn run_write_index(cmd: CmdOpts<WriteIndex>) -> Result<()> {
 fn run_create_author_maps(cmd: CmdOpts<CreateAuthorMaps>) -> Result<()> {
     let maps = crate::author::create_author_maps(&cmd.config)?;
     info!("{:#?}", maps);
+    Ok(())
+}
+
+fn run_write_author_pages(cmd: CmdOpts<WriteAuthorPages>) -> Result<()> {
+    let assets = assets::AssetDirs {
+        css_dir: PathBuf::from("../css/"),
+    };
+    let index_data = RefCell::new(Vec::new());
+
+    for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|meta, post| {
+        match html::extract_article(&post) {
+            Ok(dom) => {
+                let doc = convert::from_dom(&meta, &dom);
+                let doc = sanitize::sanitize(doc);
+                let title = extract::title(&doc);
+                match title {
+                    Some(title) => {
+                        let file_name = sanitize::title_to_slug(title.clone());
+                        let index_entry = IndexEntry {
+                            post_meta: meta.clone(),
+                            title,
+                            file_name,
+                        };
+                        index_data.borrow_mut().push(index_entry);
+                    },
+                    None => {
+                        error!("no title found");
+                    }
+                }
+            }
+            Err(e) => {
+                error!("{}", e);
+            }
+        }
+        Ok(())
+    });
+
+    let render_dir = cmd.global_opts.data_dir.join(RENDER_DIR);
+    let author_maps = crate::author::create_author_maps(&cmd.config)?;
+    author::write_pages(&render_dir, &cmd.config.authors, &assets, index_data.into_inner(), author_maps)?;
+
     Ok(())
 }
