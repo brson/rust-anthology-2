@@ -10,6 +10,7 @@ pub fn title_to_slug(s: String) -> String {
     let s = convert_space_to_dash(s);
     let s = remove_non_ascii_alphanumeric_dash(s);
     let s = condense_dash_runs(s);
+    let s = remove_leading_and_trailing_dashes(s);
     s
 }
 
@@ -43,4 +44,16 @@ fn condense_dash_runs(s: String) -> String {
             old = new;
         }
     }
+}
+
+fn remove_leading_and_trailing_dashes(mut s: String) -> String {
+    let mut s = &mut s[..];
+    if s.as_bytes()[0] == b'-' {
+        s = &mut s[1..];
+    }
+    let len = s.len();
+    if s.as_bytes()[len - 1] == b'-' {
+        s = &mut s[.. len - 1 ];
+    }
+    s.to_string()
 }
