@@ -64,9 +64,8 @@ pub struct BlogPost {
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Category {
-    Uncategorized,
     Introduction,
-    ExperienceReports,
+    Experience,
     Ownership,
     Traits,
     Language,
@@ -84,6 +83,7 @@ pub enum Category {
     TypeSystems,
     Internals,
     Culture,
+    Uncategorized,
 }
 
 impl Default for Category {
