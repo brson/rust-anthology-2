@@ -6,6 +6,14 @@ pub fn sanitize(doc: Document) -> Document {
 }
 
 pub fn title_to_slug(s: String) -> String {
+    string_to_slug(s)
+}
+
+pub fn name_to_slug(s: String) -> String {
+    string_to_slug(s)
+}
+
+fn string_to_slug(s: String) -> String {
     let s = s.to_lowercase();
     let s = convert_space_to_dash(s);
     let s = remove_non_ascii_alphanumeric_dash(s);

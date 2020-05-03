@@ -1,3 +1,4 @@
+use crate::sanitize;
 use crate::config::Category;
 use std::collections::BTreeMap;
 use std::collections::btree_map::Entry;
@@ -74,7 +75,9 @@ fn write_body(file: &mut File, entries: Vec<IndexEntry>, authors: AuthorMaps) ->
 fn maybe_write_author(file: &mut File, entry: &IndexEntry, authors: &AuthorMaps) -> Result<()> {
     if let Some(name) = authors.blog_post_author.get(&entry.post_meta.url) {
         writeln!(file, "<span>");
-        writeln!(file, "by {}", name);
+        let name_slug = sanitize::name_to_slug(name.to_string());
+        let link = format!("./a/{}.html", name_slug);
+        writeln!(file, "by <a href='{}'>{}</a>", link, name);
         writeln!(file, "</span>");
     }
     Ok(())
