@@ -14,7 +14,7 @@ use anyhow::{Result, Context, bail, anyhow};
 use structopt::StructOpt;
 use std::path::PathBuf;
 use crate::http_cache::HttpCache;
-use crate::config::{load_config, Config};
+use crate::config::{load_config_old, ConfigOld};
 
 mod http_cache;
 mod html;
@@ -109,7 +109,7 @@ static POST_DIR: &'static str = "p";
 
 struct CmdOpts<T> {
     global_opts: GlobalOpts,
-    config: Config,
+    config: ConfigOld,
     cmd: T,
 }
 
@@ -125,7 +125,7 @@ fn main() -> Result<()> {
     debug!("opts: {:#?}", opts);
 
     let global_opts = opts.global_opts;
-    let config = load_config()?;
+    let config = load_config_old()?;
 
     match opts.command {
         Command::DumpConfig => {
@@ -175,7 +175,7 @@ fn run_fetch(cmd: CmdOpts<FetchCmd>) -> Result<()> {
 
 type PostHandler<'a> = dyn Fn(&Url, String) -> Result<()> + 'a;
 
-fn for_each_post(opts: &GlobalOpts, config: &Config, url_regex: &str, f: &PostHandler) -> Result<()> {
+fn for_each_post(opts: &GlobalOpts, config: &ConfigOld, url_regex: &str, f: &PostHandler) -> Result<()> {
     let regex = Regex::new(url_regex)
         .context("building regex")?;
     let cache_dir = opts.data_dir.join("http-cache");

@@ -4,12 +4,9 @@ use url::Url;
 use serde::{Serialize, Deserialize};
 use anyhow::{Result, Context};
 
-static CONFIG: &'static str =
-    include_str!("../config/blog-posts.toml");
+static BLOG_FILE: &'static str = "./config/blog-posts-old.toml";
 
-static BLOG_FILE: &'static str = "./config/blog-posts.toml";
-
-pub fn load_config() -> Result<Config> {
+pub fn load_config_old() -> Result<ConfigOld> {
     let blogs = fs::read_to_string(BLOG_FILE)
         .context("reading blog file")?;
     toml::from_str(&blogs)
@@ -17,14 +14,14 @@ pub fn load_config() -> Result<Config> {
 }
 
 #[derive(Deserialize, Debug)]
-pub struct Config {
+pub struct ConfigOld {
     pub blog_urls: Vec<Url>,
 }
 
 static BLOG_FILE_2: &'static str = "./config/blog-posts-2.toml";
 
 pub fn convert() -> Result<()> {
-    let config = load_config()?;
+    let config = load_config_old()?;
 
     let posts = config.blog_urls.into_iter().map(|url| {
         BlogPost {
