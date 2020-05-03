@@ -46,7 +46,7 @@ enum Command {
     RenderArticle(RenderArticle),
     CopyAssets(CopyAssets),
     ExtractTitle(ExtractTitle),
-    GenerateFileName(GenerateFileName),
+    GenerateSlug(GenerateSlug),
     WriteIndex(WriteIndex),
     ConvertTmp(ConvertTmp),
 }
@@ -87,7 +87,7 @@ struct ExtractTitle {
 }
 
 #[derive(StructOpt, Debug)]
-struct GenerateFileName {
+struct GenerateSlug {
     url_regex: String,
 }
 
@@ -157,8 +157,8 @@ fn main() -> Result<()> {
         Command::ExtractTitle(cmd) => {
             run_extract_title(CmdOpts { global_opts, config, cmd })
         }
-        Command::GenerateFileName(cmd) => {
-            run_generate_file_name(CmdOpts { global_opts, config, cmd })
+        Command::GenerateSlug(cmd) => {
+            run_generate_slug(CmdOpts { global_opts, config, cmd })
         }
         Command::WriteIndex(cmd) => {
             run_write_index(CmdOpts { global_opts, config, cmd })
@@ -261,7 +261,7 @@ fn run_render_article(cmd: CmdOpts<RenderArticle>) -> Result<()> {
                 } else {
                     match title {
                         Some(title) => {
-                            let file_name = sanitize::title_to_file_name(title);
+                            let file_name = sanitize::title_to_slug(title);
                             let render_dir = cmd.global_opts.data_dir.join(RENDER_DIR);
                             let post_dir = render_dir.join(POST_DIR);
                             let render_file = post_dir.join(format!("{}.html", file_name));
@@ -319,7 +319,7 @@ fn run_extract_title(cmd: CmdOpts<ExtractTitle>) -> Result<()> {
     })
 }
 
-fn run_generate_file_name(cmd: CmdOpts<GenerateFileName>) -> Result<()> {
+fn run_generate_slug(cmd: CmdOpts<GenerateSlug>) -> Result<()> {
     for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|meta, post| {
         match html::extract_article(&post) {
             Ok(dom) => {
@@ -328,8 +328,8 @@ fn run_generate_file_name(cmd: CmdOpts<GenerateFileName>) -> Result<()> {
                 let title = extract::title(&doc);
                 match title {
                     Some(title) => {
-                        let file_name = sanitize::title_to_file_name(title);
-                        info!("file name: {}", file_name);
+                        let file_name = sanitize::title_to_slug(title);
+                        info!("slug: {}", file_name);
                     },
                     None => {
                         error!("no title found");
@@ -357,7 +357,7 @@ fn run_write_index(cmd: CmdOpts<WriteIndex>) -> Result<()> {
                 let title = extract::title(&doc);
                 match title {
                     Some(title) => {
-                        let file_name = sanitize::title_to_file_name(title.clone());
+                        let file_name = sanitize::title_to_slug(title.clone());
                         let index_entry = IndexEntry {
                             post_meta: meta.clone(),
                             title,
