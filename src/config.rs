@@ -53,7 +53,7 @@ pub struct Config {
     pub blog_posts: Vec<BlogPost>,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct BlogPost {
     pub url: Url,
     #[serde(default)]
@@ -62,7 +62,7 @@ pub struct BlogPost {
     pub broken: bool,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum Category {
     Uncategorized,
     Introduction,

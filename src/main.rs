@@ -15,6 +15,7 @@ use structopt::StructOpt;
 use std::path::PathBuf;
 use crate::http_cache::HttpCache;
 use crate::config::{load_config, Config, BlogPost};
+use crate::index::IndexEntry;
 
 mod http_cache;
 mod html;
@@ -349,7 +350,12 @@ fn run_write_index(cmd: CmdOpts<WriteIndex>) -> Result<()> {
                 match title {
                     Some(title) => {
                         let file_name = sanitize::title_to_file_name(title.clone());
-                        data.borrow_mut().push((title, file_name));
+                        let index_entry = IndexEntry {
+                            post_meta: meta.clone(),
+                            title,
+                            file_name,
+                        };
+                        data.borrow_mut().push(index_entry);
                     },
                     None => {
                         error!("no title found");
