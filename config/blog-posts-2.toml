@@ -1,0 +1,653 @@
+[[blog_posts]]
+url = "http://anowell.com/posts/why-rust.html"
+
+[[blog_posts]]
+url = "http://aturon.github.io/blog/2016/08/11/futures/"
+
+[[blog_posts]]
+url = "http://aturon.github.io/blog/2016/09/07/futures-design/"
+
+[[blog_posts]]
+url = "http://blog.8thlight.com/dave-torre/2015/03/11/the-option-type.html"
+
+[[blog_posts]]
+url = "http://blog.8thlight.com/uku-taht/2015/04/29/using-the-option-type-effectively.html"
+
+[[blog_posts]]
+url = "http://blog.adamperry.me/rust/2016/07/24/profiling-rust-perf-flamegraph/"
+
+[[blog_posts]]
+url = "http://blog.burntsushi.net/csv/"
+
+[[blog_posts]]
+url = "http://blog.burntsushi.net/ripgrep/"
+
+[[blog_posts]]
+url = "http://blog.burntsushi.net/rust-error-handling/"
+
+[[blog_posts]]
+url = "http://blog.japaric.io/cpu-monitor/"
+
+[[blog_posts]]
+url = "http://blog.japaric.io/fearless-concurrency/"
+
+[[blog_posts]]
+url = "http://blog.japaric.io/itm/"
+
+[[blog_posts]]
+url = "http://blog.japaric.io/quickstart/"
+
+[[blog_posts]]
+url = "http://blog.japaric.io/rtfm-overhead/"
+
+[[blog_posts]]
+url = "http://blog.jwilm.io/from-str-to-cow/"
+
+[[blog_posts]]
+url = "http://blog.pnkfx.org/blog/2019/11/18/rust-bug-minimization-patterns/"
+
+[[blog_posts]]
+url = "http://blog.rust-lang.org/2015/04/10/Fearless-Concurrency.html"
+
+[[blog_posts]]
+url = "http://blog.skylight.io/rust-means-never-having-to-close-a-socket/"
+
+[[blog_posts]]
+url = "http://brson.github.io/2016/11/30/starting-with-error-chain"
+
+[[blog_posts]]
+url = "http://brson.github.io/2017/04/05/minimally-nice-maintainer"
+
+[[blog_posts]]
+url = "http://carol-nichols.com/2015/08/01/rustc-discovery/"
+
+[[blog_posts]]
+url = "http://cglab.ca/~abeinges/blah/everyone-poops/"
+
+[[blog_posts]]
+url = "http://cglab.ca/~abeinges/blah/rust-btree-case/"
+
+[[blog_posts]]
+url = "http://cglab.ca/~abeinges/blah/rust-generics-and-collections/"
+
+[[blog_posts]]
+url = "http://cglab.ca/~abeinges/blah/rust-lifetimes-and-collections/"
+
+[[blog_posts]]
+url = "http://cglab.ca/~abeinges/blah/rust-reuse-and-recycle/"
+
+[[blog_posts]]
+url = "http://cglab.ca/~abeinges/blah/rust-unsafe-intro/"
+
+[[blog_posts]]
+url = "http://cliffle.com/blog/m4vga-in-rust/"
+
+[[blog_posts]]
+url = "http://dtrace.org/blogs/bmc/2018/09/28/the-relative-performance-of-c-and-rust/"
+
+[[blog_posts]]
+url = "http://graydon2.dreamwidth.org/1597.html"
+
+[[blog_posts]]
+url = "http://graydon2.dreamwidth.org/214016.html"
+
+[[blog_posts]]
+url = "http://graydon2.dreamwidth.org/218040.html"
+
+[[blog_posts]]
+url = "http://graydon2.dreamwidth.org/247406.html"
+
+[[blog_posts]]
+url = "http://hermanradtke.com/2015/05/03/string-vs-str-in-rust-functions.html"
+
+[[blog_posts]]
+url = "http://hermanradtke.com/2015/05/06/creating-a-rust-function-that-accepts-string-or-str.html"
+
+[[blog_posts]]
+url = "http://hermanradtke.com/2015/05/29/creating-a-rust-function-that-returns-string-or-str.html"
+
+[[blog_posts]]
+url = "http://hermanradtke.com/2015/06/09/strategies-for-solving-cannot-move-out-of-borrowing-errors-in-rust.html"
+
+[[blog_posts]]
+url = "http://hermanradtke.com/2015/06/22/effectively-using-iterators-in-rust.html"
+
+[[blog_posts]]
+url = "http://hermanradtke.com/2015/07/12/my-basic-understanding-of-mio-and-async-io.html"
+
+[[blog_posts]]
+url = "http://hermanradtke.com/2015/09/12/creating-a-simple-protocol-when-using-rust-and-mio.html"
+
+[[blog_posts]]
+url = "http://hermanradtke.com/2015/10/23/managing-connection-state-with-mio-rust.html"
+
+[[blog_posts]]
+url = "http://hermanradtke.com/2016/03/17/unions-rust-ffi.html"
+
+[[blog_posts]]
+url = "http://hermanradtke.com/2016/09/12/rust-using-and_then-and-map-combinators-on-result-type.html"
+
+[[blog_posts]]
+url = "http://hoverbear.org/2015/03/07/rust-travis-github-pages/"
+
+[[blog_posts]]
+url = "http://hoverbear.org/2015/07/10/reading-rust-function-signatures/"
+
+[[blog_posts]]
+url = "http://huonw.github.io/blog/2015/01/object-safety/"
+
+[[blog_posts]]
+url = "http://huonw.github.io/blog/2015/04/helping-travis-catch-the-rustc-train/"
+
+[[blog_posts]]
+url = "http://huonw.github.io/blog/2015/05/travis-on-the-train-part-2/"
+
+[[blog_posts]]
+url = "http://kamalmarhubi.com/blog/2016/04/13/rust-nix-easier-unix-systems-programming-3/"
+
+[[blog_posts]]
+url = "http://manishearth.github.io/blog/2016/01/03/making-your-open-source-project-newcomer-friendly/"
+
+[[blog_posts]]
+url = "http://manishearth.github.io/blog/2017/01/11/rust-tidbits-what-is-a-lang-item/"
+
+[[blog_posts]]
+url = "http://manishearth.github.io/blog/2017/01/14/stop-ascribing-meaning-to-unicode-code-points/"
+
+[[blog_posts]]
+url = "http://patshaughnessy.net/2018/3/15/how-rust-implements-tagged-unions"
+
+[[blog_posts]]
+url = "http://pling.jondgoodwin.com/post/lifetimes/"
+
+[[blog_posts]]
+url = "http://robert.ocallahan.org/2016/02/rewrite-everything-in-rust.html"
+
+[[blog_posts]]
+url = "http://science.raphael.poss.name/rust-for-functional-programmers.html"
+
+[[blog_posts]]
+url = "http://smallcultfollowing.com/babysteps/blog/2015/04/29/on-reference-counting-and-leaks/"
+
+[[blog_posts]]
+url = "http://smallcultfollowing.com/babysteps/blog/2015/04/30/a-few-more-remarks-on-reference-counting-and-leaks/"
+
+[[blog_posts]]
+url = "http://smallcultfollowing.com/babysteps/blog/2015/12/18/rayon-data-parallelism-in-rust/"
+
+[[blog_posts]]
+url = "http://smallcultfollowing.com/babysteps/blog/2016/02/19/parallel-iterators-part-1-foundations/"
+
+[[blog_posts]]
+url = "http://smallcultfollowing.com/babysteps/blog/2016/02/25/parallel-iterators-part-2-producers/"
+
+[[blog_posts]]
+url = "http://smallcultfollowing.com/babysteps/blog/2016/05/23/unsafe-abstractions/"
+
+[[blog_posts]]
+url = "http://smallcultfollowing.com/babysteps/blog/2016/05/27/the-tootsie-pop-model-for-unsafe-code/"
+
+[[blog_posts]]
+url = "http://smallcultfollowing.com/babysteps/blog/2016/08/18/tootsie-pop-followup/"
+
+[[blog_posts]]
+url = "http://smallcultfollowing.com/babysteps/blog/2016/09/12/thoughts-on-trusting-types-and-unsafe-code/"
+
+[[blog_posts]]
+url = "http://smallcultfollowing.com/babysteps/blog/2016/10/02/observational-equivalence-and-unsafe-code/"
+
+[[blog_posts]]
+url = "http://smallcultfollowing.com/babysteps/blog/2016/11/14/parallel-iterators-part-3-consumers/"
+
+[[blog_posts]]
+url = "http://smallcultfollowing.com/babysteps/blog/2017/01/22/assigning-blame-to-unsafe-code/"
+
+[[blog_posts]]
+url = "http://smallcultfollowing.com/babysteps/blog/2017/02/01/unsafe-code-and-shared-references/"
+
+[[blog_posts]]
+url = "http://smallcultfollowing.com/babysteps/blog/2017/05/02/gnome-class-integrating-rust-and-the-gnome-object-system/"
+
+[[blog_posts]]
+url = "http://sunjay.ca/2016/07/25/rust-code-coverage"
+
+[[blog_posts]]
+url = "http://thume.ca/2019/04/29/comparing-compilers-in-rust-haskell-c-and-python/"
+
+[[blog_posts]]
+url = "http://ticki.github.io/blog/making-terminal-applications-in-rust-with-termion/"
+
+[[blog_posts]]
+url = "http://transitiontech.ca/random/RIIR"
+
+[[blog_posts]]
+url = "http://way-cooler.org/blog/2019/04/29/rewriting-way-cooler-in-c.html"
+
+[[blog_posts]]
+url = "http://words.steveklabnik.com/a-new-introduction-to-rust"
+
+[[blog_posts]]
+url = "http://words.steveklabnik.com/an-overview-of-macros-in-rust"
+
+[[blog_posts]]
+url = "http://words.steveklabnik.com/fire-mario-not-fire-flowers"
+
+[[blog_posts]]
+url = "http://words.steveklabnik.com/four-years-with-rust"
+
+[[blog_posts]]
+url = "http://words.steveklabnik.com/rust-is-more-than-safety"
+
+[[blog_posts]]
+url = "http://www.chriskrycho.com/2018/exploring-4-languages-integrity-and-consistency.html"
+
+[[blog_posts]]
+url = "http://www.ncameron.org/blog/macros-in-rust-pt1/"
+
+[[blog_posts]]
+url = "http://www.ncameron.org/blog/macros-in-rust-pt2/"
+
+[[blog_posts]]
+url = "http://www.ncameron.org/blog/macros-in-rust-pt3/"
+
+[[blog_posts]]
+url = "http://www.ncameron.org/blog/macros-in-rust-pt4/"
+
+[[blog_posts]]
+url = "http://www.ncameron.org/blog/rust-is-about-productivity/"
+
+[[blog_posts]]
+url = "http://xion.io/post/code/rust-for-loop.html"
+
+[[blog_posts]]
+url = "http://xion.io/post/code/rust-patterns-ref.html"
+
+[[blog_posts]]
+url = "http://xion.io/post/programming/rust-async-closer-look.html"
+
+[[blog_posts]]
+url = "https://anderspitman.net/2018/04/04/static-react-rust-webapp/"
+
+[[blog_posts]]
+url = "https://aturon.github.io/blog/2015/08/27/epoch/"
+
+[[blog_posts]]
+url = "https://aturon.github.io/tech/2018/04/24/async-borrowing/"
+
+[[blog_posts]]
+url = "https://beachape.com/blog/2017/05/24/rust-from-scala/"
+
+[[blog_posts]]
+url = "https://benashford.github.io/blog/2015/05/24/rust-traits-for-developer-friendly-libraries/"
+
+[[blog_posts]]
+url = "https://blog.adamant-lang.org/2019/rust-lifetime-visualization-ideas/"
+
+[[blog_posts]]
+url = "https://blog.dbrgn.ch/2019/12/24/testing-for-no-std-compatibility/"
+
+[[blog_posts]]
+url = "https://blog.discordapp.com/why-discord-is-switching-from-go-to-rust-a190bbca2b1f"
+
+[[blog_posts]]
+url = "https://blog.guillaume-gomez.fr/articles/2017-03-09+Little+tour+of+multiple+iterators+implementation+in+Rust"
+
+[[blog_posts]]
+url = "https://blog.logrocket.com/how-to-write-crap-rust-code/"
+
+[[blog_posts]]
+url = "https://blog.rust-lang.org/2014/10/30/Stability.html"
+
+[[blog_posts]]
+url = "https://blog.rust-lang.org/2015/04/17/Enums-match-mutation-and-moves.html"
+
+[[blog_posts]]
+url = "https://blog.rust-lang.org/2015/05/11/traits.html"
+
+[[blog_posts]]
+url = "https://brandur.org/fragments/rust-brick-walls"
+
+[[blog_posts]]
+url = "https://brandur.org/rust-web"
+
+[[blog_posts]]
+url = "https://brson.github.io/2017/07/10/how-rust-is-tested"
+
+[[blog_posts]]
+url = "https://brson.github.io/styletest.html"
+
+[[blog_posts]]
+url = "https://cbreeden.github.io/Macros11/"
+
+[[blog_posts]]
+url = "https://chrismorgan.info/blog/rust-cfg_attr.html"
+
+[[blog_posts]]
+url = "https://chrismorgan.info/blog/rust-fizzbuzz.html"
+
+[[blog_posts]]
+url = "https://chrismorgan.info/blog/rust-ownership-the-hard-way.html"
+
+[[blog_posts]]
+url = "https://danielkeep.github.io/practical-intro-to-macros.html"
+
+[[blog_posts]]
+url = "https://dev.to/sendilkumarn/increase-rust-and-webassembly-performance-382h"
+
+[[blog_posts]]
+url = "https://docs.rs/dtolnay/*/dtolnay/macro._03__soundness_bugs.html"
+
+[[blog_posts]]
+url = "https://fasterthanli.me/blog/2020/a-half-hour-to-learn-rust/"
+
+[[blog_posts]]
+url = "https://fasterthanli.me/blog/2020/i-want-off-mr-golangs-wild-ride/"
+
+[[blog_posts]]
+url = "https://ferrous-systems.com/blog/zero-sized-references/"
+
+[[blog_posts]]
+url = "https://gill.net.in/posts/auth-microservice-rust-actix-web1.0-diesel-complete-tutorial/"
+
+[[blog_posts]]
+url = "https://github.com/diwic/reffers-rs/blob/master/docs/Pointers.md"
+
+[[blog_posts]]
+url = "https://github.com/dtolnay/semver-trick"
+
+[[blog_posts]]
+url = "https://github.com/ferrous-systems/elements-of-rust/"
+
+[[blog_posts]]
+url = "https://gregoryszorc.com/blog/2020/01/13/mercurial%27s-journey-to-and-reflections-on-python-3/"
+
+[[blog_posts]]
+url = "https://hacks.mozilla.org/2018/03/making-webassembly-better-for-rust-for-all-languages/"
+
+[[blog_posts]]
+url = "https://hoverbear.org/2015/03/03/getting-acquainted-with-mio/"
+
+[[blog_posts]]
+url = "https://hoverbear.org/2015/05/02/a-journey-into-iterators/"
+
+[[blog_posts]]
+url = "https://hoverbear.org/2015/09/12/understand-over-guesswork/"
+
+[[blog_posts]]
+url = "https://hoverbear.org/2016/10/12/rust-state-machine-pattern/"
+
+[[blog_posts]]
+url = "https://hsivonen.fi/string-length/"
+
+[[blog_posts]]
+url = "https://huonw.github.io/blog/2014/07/what-does-rusts-unsafe-mean/"
+
+[[blog_posts]]
+url = "https://huonw.github.io/blog/2015/01/peeking-inside-trait-objects/"
+
+[[blog_posts]]
+url = "https://huonw.github.io/blog/2015/01/the-sized-trait/"
+
+[[blog_posts]]
+url = "https://huonw.github.io/blog/2015/02/some-notes-on-send-and-sync/"
+
+[[blog_posts]]
+url = "https://huonw.github.io/blog/2015/05/defaulting-to-thread-safety/"
+
+[[blog_posts]]
+url = "https://huonw.github.io/blog/2015/05/finding-closure-in-rust/"
+
+[[blog_posts]]
+url = "https://huonw.github.io/blog/2015/05/where-self-meets-sized-revisiting-object-safety/"
+
+[[blog_posts]]
+url = "https://huonw.github.io/blog/2016/04/memory-leaks-are-memory-safe/"
+
+[[blog_posts]]
+url = "https://huonw.github.io/blog/2016/04/myths-and-legends-about-integer-overflow-in-rust/"
+
+[[blog_posts]]
+url = "https://insanitybit.github.io/2017/07/10/building-a-microservice-in-rust"
+
+[[blog_posts]]
+url = "https://jackmott.github.io/2017/02/27/trail-of-slow.html"
+
+[[blog_posts]]
+url = "https://jamesmunns.com/update/2018/04/01/tinyrocket.html"
+
+[[blog_posts]]
+url = "https://jason-williams.co.uk/a-possible-new-backend-for-rust"
+
+[[blog_posts]]
+url = "https://jitter.company/blog/2020/01/28/measuring-space-time-behaviours-of-piano-keys-with-rust/"
+
+[[blog_posts]]
+url = "https://kasma1990.gitlab.io/2017/01/01/rust-is-about-better-citizenship/"
+
+[[blog_posts]]
+url = "https://lifthrasiir.github.io/rustlog/why-is-a-rust-executable-large.html"
+
+[[blog_posts]]
+url = "https://limpet.net/mbrubeck/2019/02/07/rust-a-unique-perspective.html"
+
+[[blog_posts]]
+url = "https://llogiq.github.io/2015/06/16/bench.html"
+
+[[blog_posts]]
+url = "https://llogiq.github.io/2015/07/09/cow.html"
+
+[[blog_posts]]
+url = "https://llogiq.github.io/2015/07/10/cow-redux.html"
+
+[[blog_posts]]
+url = "https://llogiq.github.io/2015/07/15/profiling.html"
+
+[[blog_posts]]
+url = "https://llogiq.github.io/2015/07/30/traits.html"
+
+[[blog_posts]]
+url = "https://llogiq.github.io/2015/10/03/fast.html"
+
+[[blog_posts]]
+url = "https://llogiq.github.io/2015/11/27/from-into.html"
+
+[[blog_posts]]
+url = "https://llogiq.github.io/2015/12/12/types.html"
+
+[[blog_posts]]
+url = "https://llogiq.github.io/2016/02/11/rustic.html"
+
+[[blog_posts]]
+url = "https://llogiq.github.io/2016/02/23/moretypes.html"
+
+[[blog_posts]]
+url = "https://llogiq.github.io/2016/04/28/arraymap.html"
+
+[[blog_posts]]
+url = "https://llogiq.github.io/2016/12/27/retro.html"
+
+[[blog_posts]]
+url = "https://llogiq.github.io/2017/06/01/perf-pitfalls.html"
+
+[[blog_posts]]
+url = "https://llogiq.github.io/2018/04/03/corners.html"
+
+[[blog_posts]]
+url = "https://lucumr.pocoo.org/2020/1/1/async-pressure/"
+
+[[blog_posts]]
+url = "https://manishearth.github.io/blog/2015/05/03/where-rust-really-shines/"
+
+[[blog_posts]]
+url = "https://manishearth.github.io/blog/2015/05/17/the-problem-with-shared-mutability/"
+
+[[blog_posts]]
+url = "https://manishearth.github.io/blog/2015/05/27/wrapper-types-in-rust-choosing-your-guarantees/"
+
+[[blog_posts]]
+url = "https://manishearth.github.io/blog/2015/05/30/how-rust-achieves-thread-safety/"
+
+[[blog_posts]]
+url = "https://manishearth.github.io/blog/2016/12/02/reflections-on-rusting-trust/"
+
+[[blog_posts]]
+url = "https://manishearth.github.io/blog/2017/01/15/breaking-our-latin-1-assumptions/"
+
+[[blog_posts]]
+url = "https://manishearth.github.io/blog/2017/03/04/what-are-sum-product-and-pi-types/"
+
+[[blog_posts]]
+url = "https://manishearth.github.io/blog/2017/03/18/inhtpinhtpamaa/"
+
+[[blog_posts]]
+url = "https://matklad.github.io/2020/02/14/why-rust-is-loved.html"
+
+[[blog_posts]]
+url = "https://matthias-endler.de/2017/why-type-systems-matter/"
+
+[[blog_posts]]
+url = "https://medium.com/@Hisako1337/rust-in-2017-8f2b57a67d9b#.3eegqri2g"
+
+[[blog_posts]]
+url = "https://medium.com/@ag_dubs/fire-flowers-and-marios-marketing-rust-996b3fdbe8f3"
+
+[[blog_posts]]
+url = "https://medium.com/@edwardpku/being-an-intermediate-rust-programmer-in-one-day-37283bb1b0b0"
+
+[[blog_posts]]
+url = "https://medium.com/@ly.lee/hosting-embedded-rust-apps-on-apache-mynewt-with-stm32-blue-pill-c86b119fe5f"
+
+[[blog_posts]]
+url = "https://medium.com/@richardanaya/a-journey-through-rust-lifetimes-5a08782c7091"
+
+[[blog_posts]]
+url = "https://medium.com/@robertgrosse/my-experience-rewriting-enjarify-in-rust-723089b406ad"
+
+[[blog_posts]]
+url = "https://medium.com/@robertgrosse/optimizing-rc-memory-usage-in-rust-6652de9e119e"
+
+[[blog_posts]]
+url = "https://medium.com/@robertgrosse/parallelizing-enjarify-in-go-and-rust-21055d64af7e"
+
+[[blog_posts]]
+url = "https://medium.com/@robertgrosse/rust-makes-implicit-invariants-explicit-baf4cf17ae50"
+
+[[blog_posts]]
+url = "https://medium.com/dwelo-r-d/we-rewrote-our-iot-platform-in-rust-and-got-away-with-it-2c8867c61b67"
+
+[[blog_posts]]
+url = "https://medium.com/learning-rust"
+
+[[blog_posts]]
+url = "https://medium.com/learning-rust/rust-basics-e73304ab35c7"
+
+[[blog_posts]]
+url = "https://medium.com/learning-rust/rust-beyond-the-basics-4fc697e3bf4f"
+
+[[blog_posts]]
+url = "https://medium.com/learning-rust/rust-the-tough-part-2ea11ed3693e"
+
+[[blog_posts]]
+url = "https://medium.com/tadaweb/security-by-design-a-brief-introduction-to-rust-378060e45038"
+
+[[blog_posts]]
+url = "https://mgattozzi.com/rust-is"
+
+[[blog_posts]]
+url = "https://msrc-blog.microsoft.com/2020/04/29/the-safety-boat-kubernetes-and-rust/"
+
+[[blog_posts]]
+url = "https://oribenshir.github.io/afternoon_rusting/blog/copy-on-write"
+
+[[blog_posts]]
+url = "https://os.phil-opp.com/async-await/"
+
+[[blog_posts]]
+url = "https://people.gnome.org/~federico/blog/rust-libstd-syscalls-and-errors.html"
+
+[[blog_posts]]
+url = "https://pitdicker.github.io/Interior-mutability-patterns/"
+
+[[blog_posts]]
+url = "https://raphaelgomes.dev/blog/articles/2019-07-01-sharing-references-between-python-and-rust.html"
+
+[[blog_posts]]
+url = "https://raphlinus.github.io/rust/2019/08/21/rust-bloat.html"
+
+[[blog_posts]]
+url = "https://ricardomartins.cc/2016/06/08/interior-mutability"
+
+[[blog_posts]]
+url = "https://ricardomartins.cc/2016/06/25/interior-mutability-thread-safety"
+
+[[blog_posts]]
+url = "https://ricardomartins.cc/2016/07/11/interior-mutability-behind-the-curtain"
+
+[[blog_posts]]
+url = "https://ricardomartins.cc/2016/08/03/convenient_and_idiomatic_conversions_in_rust"
+
+[[blog_posts]]
+url = "https://rufflewind.com/2017-02-15/rust-move-copy-borrow"
+
+[[blog_posts]]
+url = "https://ruudvanasseldonk.com/2016/11/30/zero-cost-abstractions"
+
+[[blog_posts]]
+url = "https://santiagopastorino.com/rust-marketing-pitch/"
+
+[[blog_posts]]
+url = "https://scribbles.pascalhertleif.de/elegant-apis-in-rust.html"
+
+[[blog_posts]]
+url = "https://sdleffler.github.io/RustTypeSystemTuringComplete/"
+
+[[blog_posts]]
+url = "https://smallcultfollowing.com/babysteps/blog/2012/11/18/imagine-never-hearing-the-phrase-aliasable/"
+
+[[blog_posts]]
+url = "https://stackoverflow.blog/2020/01/20/what-is-rust-and-why-is-it-so-popular/"
+
+[[blog_posts]]
+url = "https://stevedonovan.github.io/rustifications/2018/08/18/rust-closures-are-hard.html"
+
+[[blog_posts]]
+url = "https://stjepang.github.io/2019/01/29/lock-free-rust-crossbeam-in-2019.html"
+
+[[blog_posts]]
+url = "https://thefeedbackloop.xyz/safety-is-rusts-fireflower/"
+
+[[blog_posts]]
+url = "https://tmandry.gitlab.io/blog/posts/optimizing-await-1/"
+
+[[blog_posts]]
+url = "https://tmandry.gitlab.io/blog/posts/optimizing-await-2/"
+
+[[blog_posts]]
+url = "https://tonyarcieri.com/it-s-time-for-a-memory-safety-intervention"
+
+[[blog_posts]]
+url = "https://www.coredump.ch/2017/07/05/understanding-the-tokio-reactor-core/"
+
+[[blog_posts]]
+url = "https://www.ncameron.org/blog/migrating-a-crate-from-futures-0-1-to-0-3/"
+
+[[blog_posts]]
+url = "https://www.nibor.org/blog/fuzzing-is-magic---or-how-i-found-a-panic-in-rusts-regex-library/"
+
+[[blog_posts]]
+url = "https://www.pietroalbini.org/blog/shipping-a-compiler-every-six-weeks/"
+
+[[blog_posts]]
+url = "https://www.ralfj.de/blog/2016/01/09/the-scope-of-unsafe.html"
+
+[[blog_posts]]
+url = "https://www.ralfj.de/blog/2017/06/09/mutexguard-sync.html"
+
+[[blog_posts]]
+url = "https://www.reddit.com/r/rust/comments/5lo6ny/rust_is_about_boldness/"
+
+[[blog_posts]]
+url = "https://www.worthe-it.co.za/programming/2017/06/19/a-rusty-tale-of-shared-memories-and-passed-messages-1.html"
+
+[[blog_posts]]
+url = "https://www.worthe-it.co.za/programming/2017/07/11/a-rusty-tale-of-shared-memories-and-passed-messages-2.html"
