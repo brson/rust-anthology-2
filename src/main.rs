@@ -159,7 +159,7 @@ fn main() -> Result<()> {
 
 fn run_fetch(cmd: CmdOpts<FetchCmd>) -> Result<()> {
     for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|_, post| {
-        info!("{}", post);
+        debug!("{}", post);
         Ok(())
     })
 }
@@ -175,8 +175,15 @@ fn for_each_post(opts: &GlobalOpts, config: &Config, url_regex: &str, f: &PostHa
     for url in &config.blog_urls {
         if regex.is_match(&url.as_str()) {
             info!("fetching {}", url);
-            let page = client.get(url)?;
-            f(url, page)?;
+            let page = client.get(url);
+            match page {
+                Ok(page) => {
+                    f(url, page)?;
+                }
+                Err(e) => {
+                    error!("error: {}", e);
+                }
+            }
         }
     }
     
