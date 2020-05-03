@@ -1,3 +1,4 @@
+use std::fmt;
 use std::fs;
 use std::default::Default;
 use url::Url;
@@ -89,5 +90,34 @@ pub enum Category {
 impl Default for Category {
     fn default() -> Category {
         Category::Uncategorized
+    }
+}
+
+impl fmt::Display for Category {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        use Category::*;
+        let lbl = match self {
+            Introduction => "Intro to Rust",
+            Experience => "Experience Reports",
+            Ownership => "Ownership",
+            Traits => "Traits",
+            Language => "The Rust Language",
+            Iterators => "Iterators",
+            ConcurrencyAndParallelism => "Concurrency and Parallelism",
+            InPractice => "Rust in Practice",
+            Idioms => "Idiomatic Rust",
+            Macros => "Macros",
+            Unsafe => "Unsafe Rust",
+            Async => "Async",
+            Web => "Web Programming",
+            Systems => "Systems Programming",
+            Embedded => "Embedded Systems",
+            Wasm => "Web Assembly",
+            TypeSystems => "Fun With Type Systems",
+            Internals => "Compiler Internals",
+            Culture => "Rust Culture",
+            Uncategorized => "Uncategorized",
+        };
+        write!(f, "{}", lbl)
     }
 }

@@ -52,7 +52,7 @@ fn write_body(file: &mut File, entries: Vec<IndexEntry>) -> Result<()> {
     writeln!(file, "<h1>{}</h1>", TITLE);
     for (category, entries) in categories {
         writeln!(file, "<section>");
-        writeln!(file, "<h2>{:?}</h2>", category);
+        writeln!(file, "<h2>{}</h2>", category);
         for entry in entries {
             let title = entry.title;
             let file_name = entry.file_name;
