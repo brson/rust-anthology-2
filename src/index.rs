@@ -1,3 +1,6 @@
+use crate::config::Category;
+use std::collections::BTreeMap;
+use std::collections::btree_map::Entry;
 use log::info;
 use std::io::Write;
 use anyhow::{Result, Context};
@@ -39,20 +42,46 @@ pub fn write(dir: &Path, assets: &AssetDirs, data: Vec<IndexEntry>) -> Result<()
     Ok(())
 }
 
+type Categories = BTreeMap<Category, Vec<IndexEntry>>;
+
 fn write_body(file: &mut File, entries: Vec<IndexEntry>) -> Result<()> {
+    let categories = categorize(entries);
+
     writeln!(file, "<body>");
     writeln!(file, "<main>");
     writeln!(file, "<h1>{}</h1>", TITLE);
-    for entry in entries {
-        let title = entry.title;
-        let file_name = entry.file_name;
-        writeln!(file, "<p>");
-        writeln!(file, "<a href='./p/{}.html'>{}</a>",
-                 file_name, title);
-        writeln!(file, "</p>");
+    for (category, entries) in categories {
+        writeln!(file, "<section>");
+        writeln!(file, "<h2>{:?}</h2>", category);
+        for entry in entries {
+            let title = entry.title;
+            let file_name = entry.file_name;
+            writeln!(file, "<p>");
+            writeln!(file, "<a href='./p/{}.html'>{}</a>",
+                     file_name, title);
+            writeln!(file, "</p>");
+        }
+        writeln!(file, "</section>");
     }
     writeln!(file, "</main>");
     writeln!(file, "</body>");
 
     Ok(())
+}
+
+fn categorize(entries: Vec<IndexEntry>) -> Categories {
+    let mut map = BTreeMap::new();
+
+    for entry in entries {
+        match map.entry(entry.post_meta.category.clone()) {
+            Entry::Vacant(v) => {
+                v.insert(vec![entry]);
+            }
+            Entry::Occupied(mut v) => {
+                v.get_mut().push(entry);
+            }
+        }
+    }
+
+    map
 }

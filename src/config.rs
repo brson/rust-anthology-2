@@ -62,7 +62,7 @@ pub struct BlogPost {
     pub broken: bool,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Category {
     Uncategorized,
     Introduction,
