@@ -164,7 +164,6 @@ blog_urls = [
 "https://llogiq.github.io/2017/06/01/perf-pitfalls.html",
 "https://llogiq.github.io/2018/04/03/corners.html",
 "https://lucumr.pocoo.org/2020/1/1/async-pressure/",
-"https://manishearth.github.io/blog/2015/05/03/where-rust-really-shines",
 "https://manishearth.github.io/blog/2015/05/03/where-rust-really-shines/",
 "https://manishearth.github.io/blog/2015/05/17/the-problem-with-shared-mutability/",
 "https://manishearth.github.io/blog/2015/05/27/wrapper-types-in-rust-choosing-your-guarantees/",
