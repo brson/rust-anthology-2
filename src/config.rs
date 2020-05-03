@@ -5,42 +5,6 @@ use url::Url;
 use serde::{Serialize, Deserialize};
 use anyhow::{Result, Context};
 
-static BLOG_FILE_OLD: &'static str = "./config/blog-posts-old.toml";
-
-pub fn load_config_old() -> Result<ConfigOld> {
-    let blogs = fs::read_to_string(BLOG_FILE_OLD)
-        .context("reading blog file")?;
-    toml::from_str(&blogs)
-        .context("parsing config")
-}
-
-#[derive(Deserialize, Debug)]
-pub struct ConfigOld {
-    pub blog_urls: Vec<Url>,
-}
-
-
-pub fn convert() -> Result<()> {
-    let config = load_config_old()?;
-
-    let posts = config.blog_urls.into_iter().map(|url| {
-        BlogPost {
-            url,
-            category: Default::default(),
-            publish: Default::default(),
-        }
-    });
-
-    let config2 = Config { blog_posts: posts.collect(), authors: vec![] };
-
-    let toml = toml::to_string(&config2)?;
-
-    fs::write(BLOG_POSTS_FILE, &toml)
-        .context("writing blog-posts-2")?;
-
-    Ok(())
-}
-
 static BLOG_POSTS_FILE: &'static str = "./config/blog-posts.toml";
 static AUTHORS_FILE: &'static str = "./config/authors.toml";
 

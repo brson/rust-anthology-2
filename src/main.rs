@@ -48,7 +48,6 @@ enum Command {
     ExtractTitle(ExtractTitle),
     GenerateSlug(GenerateSlug),
     WriteIndex(WriteIndex),
-    ConvertTmp(ConvertTmp),
 }
 
 #[derive(StructOpt, Debug)]
@@ -105,9 +104,6 @@ struct GlobalOpts {
     unpublished: bool,
 }
 
-#[derive(StructOpt, Debug)]
-struct ConvertTmp { }
-
 static RENDER_DIR: &'static str = "render";
 static POST_DIR: &'static str = "p";
 
@@ -162,10 +158,6 @@ fn main() -> Result<()> {
         }
         Command::WriteIndex(cmd) => {
             run_write_index(CmdOpts { global_opts, config, cmd })
-        }
-        Command::ConvertTmp(cmd) => {
-            crate::config::convert()?;
-            Ok(())
         }
     }
 }
