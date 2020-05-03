@@ -53,10 +53,9 @@ url = "http://blog.rust-lang.org/2015/04/10/Fearless-Concurrency.html"
 url = "http://blog.skylight.io/rust-means-never-having-to-close-a-socket/"
 
 [[blog_posts]]
-url = "http://brson.github.io/2016/11/30/starting-with-error-chain"
-
-[[blog_posts]]
 url = "http://brson.github.io/2017/04/05/minimally-nice-maintainer"
+category = "Culture"
+publish = true
 
 [[blog_posts]]
 url = "http://carol-nichols.com/2015/08/01/rustc-discovery/"
@@ -156,48 +155,6 @@ url = "http://robert.ocallahan.org/2016/02/rewrite-everything-in-rust.html"
 
 [[blog_posts]]
 url = "http://science.raphael.poss.name/rust-for-functional-programmers.html"
-
-[[blog_posts]]
-url = "http://smallcultfollowing.com/babysteps/blog/2015/04/29/on-reference-counting-and-leaks/"
-
-[[blog_posts]]
-url = "http://smallcultfollowing.com/babysteps/blog/2015/04/30/a-few-more-remarks-on-reference-counting-and-leaks/"
-
-[[blog_posts]]
-url = "http://smallcultfollowing.com/babysteps/blog/2015/12/18/rayon-data-parallelism-in-rust/"
-
-[[blog_posts]]
-url = "http://smallcultfollowing.com/babysteps/blog/2016/02/19/parallel-iterators-part-1-foundations/"
-
-[[blog_posts]]
-url = "http://smallcultfollowing.com/babysteps/blog/2016/02/25/parallel-iterators-part-2-producers/"
-
-[[blog_posts]]
-url = "http://smallcultfollowing.com/babysteps/blog/2016/05/23/unsafe-abstractions/"
-
-[[blog_posts]]
-url = "http://smallcultfollowing.com/babysteps/blog/2016/05/27/the-tootsie-pop-model-for-unsafe-code/"
-
-[[blog_posts]]
-url = "http://smallcultfollowing.com/babysteps/blog/2016/08/18/tootsie-pop-followup/"
-
-[[blog_posts]]
-url = "http://smallcultfollowing.com/babysteps/blog/2016/09/12/thoughts-on-trusting-types-and-unsafe-code/"
-
-[[blog_posts]]
-url = "http://smallcultfollowing.com/babysteps/blog/2016/10/02/observational-equivalence-and-unsafe-code/"
-
-[[blog_posts]]
-url = "http://smallcultfollowing.com/babysteps/blog/2016/11/14/parallel-iterators-part-3-consumers/"
-
-[[blog_posts]]
-url = "http://smallcultfollowing.com/babysteps/blog/2017/01/22/assigning-blame-to-unsafe-code/"
-
-[[blog_posts]]
-url = "http://smallcultfollowing.com/babysteps/blog/2017/02/01/unsafe-code-and-shared-references/"
-
-[[blog_posts]]
-url = "http://smallcultfollowing.com/babysteps/blog/2017/05/02/gnome-class-integrating-rust-and-the-gnome-object-system/"
 
 [[blog_posts]]
 url = "http://sunjay.ca/2016/07/25/rust-code-coverage"
@@ -363,6 +320,7 @@ url = "https://hoverbear.org/2015/05/02/a-journey-into-iterators/"
 
 [[blog_posts]]
 url = "https://hoverbear.org/2015/09/12/understand-over-guesswork/"
+category = "Introduction"
 
 [[blog_posts]]
 url = "https://hoverbear.org/2016/10/12/rust-state-machine-pattern/"
@@ -621,6 +579,76 @@ url = "https://sdleffler.github.io/RustTypeSystemTuringComplete/"
 
 [[blog_posts]]
 url = "https://smallcultfollowing.com/babysteps/blog/2012/11/18/imagine-never-hearing-the-phrase-aliasable/"
+
+[[blog_posts]]
+url = "https://smallcultfollowing.com/babysteps/blog/2015/04/29/on-reference-counting-and-leaks/"
+category = "Unsafe"
+publish = true
+
+[[blog_posts]]
+url = "https://smallcultfollowing.com/babysteps/blog/2015/04/30/a-few-more-remarks-on-reference-counting-and-leaks/"
+category = "Unsafe"
+publish = true
+
+[[blog_posts]]
+url = "https://smallcultfollowing.com/babysteps/blog/2015/12/18/rayon-data-parallelism-in-rust/"
+category = "ConcurrencyAndParallelism"
+publish = true
+
+[[blog_posts]]
+url = "https://smallcultfollowing.com/babysteps/blog/2016/02/19/parallel-iterators-part-1-foundations/"
+category = "ConcurrencyAndParallelism"
+publish = true
+
+[[blog_posts]]
+url = "https://smallcultfollowing.com/babysteps/blog/2016/02/25/parallel-iterators-part-2-producers/"
+category = "ConcurrencyAndParallelism"
+publish = true
+
+[[blog_posts]]
+url = "https://smallcultfollowing.com/babysteps/blog/2016/05/23/unsafe-abstractions/"
+category = "Unsafe"
+publish = true
+
+[[blog_posts]]
+url = "https://smallcultfollowing.com/babysteps/blog/2016/05/27/the-tootsie-pop-model-for-unsafe-code/"
+category = "Unsafe"
+publish = true
+
+[[blog_posts]]
+url = "https://smallcultfollowing.com/babysteps/blog/2016/08/18/tootsie-pop-followup/"
+category = "Unsafe"
+publish = true
+
+[[blog_posts]]
+url = "https://smallcultfollowing.com/babysteps/blog/2016/09/12/thoughts-on-trusting-types-and-unsafe-code/"
+category = "Unsafe"
+publish = true
+
+[[blog_posts]]
+url = "https://smallcultfollowing.com/babysteps/blog/2016/10/02/observational-equivalence-and-unsafe-code/"
+category = "Unsafe"
+publish = true
+
+[[blog_posts]]
+url = "https://smallcultfollowing.com/babysteps/blog/2016/11/14/parallel-iterators-part-3-consumers/"
+category = "ConcurrencyAndParallelism"
+publish = true
+
+[[blog_posts]]
+url = "https://smallcultfollowing.com/babysteps/blog/2017/01/22/assigning-blame-to-unsafe-code/"
+category = "Unsafe"
+publish = true
+
+[[blog_posts]]
+url = "https://smallcultfollowing.com/babysteps/blog/2017/02/01/unsafe-code-and-shared-references/"
+category = "Unsafe"
+publish = true
+
+[[blog_posts]]
+url = "https://smallcultfollowing.com/babysteps/blog/2017/05/02/gnome-class-integrating-rust-and-the-gnome-object-system/"
+category = "InPractice"
+publish = true
 
 [[blog_posts]]
 url = "https://stackoverflow.blog/2020/01/20/what-is-rust-and-why-is-it-so-popular/"
