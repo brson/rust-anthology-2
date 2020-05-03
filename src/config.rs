@@ -61,6 +61,25 @@ pub struct BlogPost {
 #[derive(Serialize, Deserialize, Debug)]
 pub enum Category {
     Uncategorized,
+    Introduction,
+    ExperienceReports,
+    Ownership,
+    Traits,
+    Language,
+    Iterators,
+    ConcurrencyAndParallelism,
+    InPractice,
+    Idioms,
+    Macros,
+    Unsafe,
+    Async,
+    Web,
+    Systems,
+    Embedded,
+    Wasm,
+    TypeSystems,
+    Internals,
+    Culture,
 }
 
 impl Default for Category {
