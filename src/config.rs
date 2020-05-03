@@ -13,24 +13,6 @@ pub fn load_config() -> Result<Config> {
 
 #[derive(Deserialize, Debug)]
 pub struct Config {
-    pub blog_posts: Vec<BlogPost>,
+    pub blog_urls: Vec<Url>,
 }
-
-#[derive(Deserialize, Debug)]
-pub struct BlogPost {
-    pub url: Url,
-    pub category: Option<Category>,
-}
-
-#[derive(Deserialize, Debug)]
-pub enum Category {
-    Uncategorized,
-}
-
-impl Default for Category {
-    fn default() -> Category {
-        Category::Uncategorized
-    }
-}
-
 

@@ -1,13 +1,13 @@
+use url::Url;
 use std::mem;
 use anyhow::Result;
-use crate::BlogPost;
 use crate::html::SubDom;
 use markup5ever_rcdom as rcdom;
 use rcdom::{Node as Node, NodeData};
 use crate::doc;
 use log::{warn, debug, error};
 
-pub fn from_dom(post: &BlogPost, dom: &SubDom) -> doc::Document {
+pub fn from_dom(url: &Url, dom: &SubDom) -> doc::Document {
     let mut state = State {
         mode: Mode::AccumulateBlocks(Vec::new()),
     };
@@ -24,7 +24,7 @@ pub fn from_dom(post: &BlogPost, dom: &SubDom) -> doc::Document {
     };
 
     let meta = doc::Meta {
-        origin_url: post.url.clone(),
+        origin_url: url.clone(),
     };
     let body = doc::Body {
         blocks: blocks,
