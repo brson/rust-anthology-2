@@ -699,3 +699,6 @@ url = "https://www.worthe-it.co.za/programming/2017/07/11/a-rusty-tale-of-shared
 
 [[blog_posts]]
 url = "https://fnordig.de/2020/05/02/rust-in-an-instant/"
+
+[[blog_posts]]
+url = "https://richardanaya.github.io/tour_of_rust/"
