@@ -706,3 +706,7 @@ url = "https://richardanaya.github.io/tour_of_rust/"
 [[blog_posts]]
 url = "https://ferrous-systems.com/blog/stable-async-on-embedded/"
 category = "Internals"
+
+[[blog_posts]]
+url = "http://kvark.github.io/web/gpu/native/2020/05/03/point-of-webgpu-native.html"
+category = "Graphics"
