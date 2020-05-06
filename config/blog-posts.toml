@@ -702,3 +702,7 @@ url = "https://fnordig.de/2020/05/02/rust-in-an-instant/"
 
 [[blog_posts]]
 url = "https://richardanaya.github.io/tour_of_rust/"
+
+[[blog_posts]]
+url = "https://ferrous-systems.com/blog/stable-async-on-embedded/"
+category = "Internals"
