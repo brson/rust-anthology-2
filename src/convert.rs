@@ -3,7 +3,7 @@ use std::mem;
 use anyhow::Result;
 use crate::html::SubDom;
 use markup5ever_rcdom as rcdom;
-use rcdom::{Node as Node, NodeData};
+use rcdom::{Node, NodeData};
 use crate::doc;
 use log::{warn, debug, error};
 use crate::config::BlogPost;

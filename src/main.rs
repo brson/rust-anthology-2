@@ -263,7 +263,7 @@ fn run_render_article(cmd: CmdOpts<RenderArticle>) -> Result<()> {
         match html::extract_article(&post) {
             Ok(dom) => {
                 let doc = convert::from_dom(&meta, &dom);
-                let doc = sanitize::sanitize(doc);
+                let doc = sanitize::sanitize(doc, &dom);
                 let title = extract::title(&doc);
                 let doc = render::to_string(&assets, &doc)?;
                 if !cmd.cmd.to_file {
@@ -310,7 +310,7 @@ fn run_extract_title(cmd: CmdOpts<ExtractTitle>) -> Result<()> {
         match html::extract_article(&post) {
             Ok(dom) => {
                 let doc = convert::from_dom(&meta, &dom);
-                let doc = sanitize::sanitize(doc);
+                let doc = sanitize::sanitize(doc, &dom);
                 let title = extract::title(&doc);
                 match title {
                     Some(title) => {
@@ -334,7 +334,7 @@ fn run_generate_slug(cmd: CmdOpts<GenerateSlug>) -> Result<()> {
         match html::extract_article(&post) {
             Ok(dom) => {
                 let doc = convert::from_dom(&meta, &dom);
-                let doc = sanitize::sanitize(doc);
+                let doc = sanitize::sanitize(doc, &dom);
                 let title = extract::title(&doc);
                 match title {
                     Some(title) => {
@@ -364,7 +364,7 @@ fn run_write_index(cmd: CmdOpts<WriteIndex>) -> Result<()> {
         match html::extract_article(&post) {
             Ok(dom) => {
                 let doc = convert::from_dom(&meta, &dom);
-                let doc = sanitize::sanitize(doc);
+                let doc = sanitize::sanitize(doc, &dom);
                 let title = extract::title(&doc);
                 match title {
                     Some(title) => {
@@ -410,7 +410,7 @@ fn run_write_author_pages(cmd: CmdOpts<WriteAuthorPages>) -> Result<()> {
         match html::extract_article(&post) {
             Ok(dom) => {
                 let doc = convert::from_dom(&meta, &dom);
-                let doc = sanitize::sanitize(doc);
+                let doc = sanitize::sanitize(doc, &dom);
                 let title = extract::title(&doc);
                 match title {
                     Some(title) => {

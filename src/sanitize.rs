@@ -1,7 +1,13 @@
+use log::warn;
 use anyhow::Result;
 use crate::doc::*;
+use markup5ever_rcdom as rcdom;
+use rcdom::{Node, NodeData};
+use crate::html::SubDom;
+use crate::doc::{Block, HeadingLevel};
 
-pub fn sanitize(doc: Document) -> Document {
+pub fn sanitize(doc: Document, dom: &SubDom) -> Document {
+    let doc = maybe_add_h1(doc, dom);
     doc
 }
 
@@ -64,4 +70,39 @@ fn remove_leading_and_trailing_dashes(mut s: String) -> String {
         s = &mut s[.. len - 1 ];
     }
     s.to_string()
+}
+
+/// Some blogs don't put their h1 title inside the `article` tag (e.g.
+/// burntsushi). This hack looks for cases where there's the extracted doc
+/// contains no h1 before other headers, then looks for an h1 inside the dom and
+/// stuff it into the doc.
+fn maybe_add_h1(mut doc: Document, dom: &SubDom) -> Document {
+    if missing_h1(&doc) {
+        warn!("missing h1 in {:?}", doc.meta.origin_url);
+        if let Some(h1) = find_h1(dom) {
+            doc.body.blocks.insert(0, Block::Heading(h1));
+        }
+    }
+    doc
+}
+
+fn missing_h1(doc: &Document) -> bool {
+    for body in &doc.body.blocks {
+        match body {
+            Block::Heading(h) => {
+                if h.level != HeadingLevel::H1 {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            _ => { }
+        }
+    }
+
+    false
+}
+
+fn find_h1(dom: &SubDom) -> Option<Heading> {
+    None
 }
