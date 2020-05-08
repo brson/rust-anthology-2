@@ -9,6 +9,19 @@ use log::{warn, debug, error};
 use crate::config::BlogPost;
 
 pub fn from_dom(post: &BlogPost, dom: &SubDom) -> doc::Document {
+    let body = body_from_dom(dom);
+
+    let meta = doc::Meta {
+        origin_url: post.url.clone(),
+    };
+    let doc = doc::Document {
+        meta, body
+    };
+
+    doc
+}
+
+pub fn body_from_dom(dom: &SubDom) -> doc::Body {
     let mut state = State {
         mode: Mode::AccumulateBlocks(Vec::new()),
     };
@@ -24,17 +37,11 @@ pub fn from_dom(post: &BlogPost, dom: &SubDom) -> doc::Document {
         }
     };
 
-    let meta = doc::Meta {
-        origin_url: post.url.clone(),
-    };
     let body = doc::Body {
         blocks: blocks,
     };
-    let doc = doc::Document {
-        meta, body
-    };
 
-    doc
+    body
 }
 
 struct State {

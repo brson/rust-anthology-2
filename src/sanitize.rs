@@ -1,4 +1,4 @@
-use log::warn;
+use log::{warn, info};
 use anyhow::Result;
 use crate::doc::*;
 use markup5ever_rcdom as rcdom;
@@ -78,17 +78,19 @@ fn remove_leading_and_trailing_dashes(mut s: String) -> String {
 /// stuff it into the doc.
 fn maybe_add_h1(mut doc: Document, post: &str) -> Document {
     if missing_h1(&doc) {
-        warn!("missing h1 in {:?}", doc.meta.origin_url);
         if let Some(h1) = find_h1(post) {
+            info!("subbing h1 from outer html in {:?}", doc.meta.origin_url);
             doc.body.blocks.insert(0, Block::Heading(h1));
+        } else {
+            warn!("missing h1 in {:?}", doc.meta.origin_url);
         }
     }
     doc
 }
 
 fn missing_h1(doc: &Document) -> bool {
-    for body in &doc.body.blocks {
-        match body {
+    for block in &doc.body.blocks {
+        match block {
             Block::Heading(h) => {
                 if h.level != HeadingLevel::H1 {
                     return true;
@@ -104,15 +106,25 @@ fn missing_h1(doc: &Document) -> bool {
 }
 
 use crate::html;
+use crate::convert;
 
 fn find_h1(post: &str) -> Option<Heading> {
     let dom = html::extract_dom(post);
     match dom {
         Ok(dom) => {
-            let mut h1 = None;
-            html::walk_dom_fn(&dom.1, &mut |node| {
-            });
-            h1
+            let body = convert::body_from_dom(&dom);
+            for block in body.blocks {
+                match block {
+                    Block::Heading(h) => {
+                        if h.level == HeadingLevel::H1 {
+                            return Some(h);
+                        }
+                    }
+                    _ => { }
+                }
+            }
+
+            None
         }
         Err(_) => None
     }
