@@ -12,3 +12,9 @@ blog = "https://manishearth.github.io"
 name = "Brian Anderson"
 github = "brson"
 blog = "https://brson.github.io"
+
+[[authors]]
+name = "Andrew Gallant"
+github = "burntsushi"
+blog = "http://blog.burntsushi.net"
+
