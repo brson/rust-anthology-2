@@ -38,6 +38,12 @@ pub fn extract_article(src: &str) -> Result<SubDom> {
     }
 }
 
+pub fn extract_dom(src: &str) -> Result<SubDom> {
+    let dom = build_dom(src)?;
+    let node = dom.document.clone();
+    Ok((dom, node))
+}
+
 fn build_dom(src: &str) -> Result<RcDom> {
     let opts = ParseOpts {
         tree_builder: TreeBuilderOpts {
@@ -156,3 +162,14 @@ fn serialize_dom(dom: &Handle) -> Result<String> {
 
     Ok(doc)
 }
+
+pub fn walk_dom_fn(dom: &Handle, f: &mut impl FnMut(&Handle)) {
+    f(dom);
+    walk_dom_fn_children(dom, f);
+}
+
+fn walk_dom_fn_children(dom: &Handle, f: &mut impl FnMut(&Handle)) {
+    for child in dom.children.borrow().iter() {
+        walk_dom_fn(&child, f);
+    }
+}    
