@@ -103,11 +103,16 @@ fn missing_h1(doc: &Document) -> bool {
     false
 }
 
+use crate::html;
+
 fn find_h1(post: &str) -> Option<Heading> {
-    let dom = crate::html::extract_dom(post);
+    let dom = html::extract_dom(post);
     match dom {
         Ok(dom) => {
-            None
+            let mut h1 = None;
+            html::walk_dom_fn(&dom.1, &mut |node| {
+            });
+            h1
         }
         Err(_) => None
     }
