@@ -18,12 +18,15 @@ url = "http://blog.adamperry.me/rust/2016/07/24/profiling-rust-perf-flamegraph/"
 
 [[blog_posts]]
 url = "http://blog.burntsushi.net/csv/"
+publish = true
 
 [[blog_posts]]
 url = "http://blog.burntsushi.net/ripgrep/"
+publish = true
 
 [[blog_posts]]
 url = "http://blog.burntsushi.net/rust-error-handling/"
+publish = true
 
 [[blog_posts]]
 url = "http://blog.japaric.io/cpu-monitor/"
