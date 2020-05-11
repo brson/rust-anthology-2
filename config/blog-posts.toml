@@ -720,3 +720,7 @@ category = "Graphics"
 [[blog_posts]]
 url = "https://nikic.github.io/2020/05/10/Make-LLVM-fast-again.html"
 category = "Internals"
+
+[[blog_posts]]
+url = "https://medium.com/@polyglot_factotum/rust-concurrency-the-single-writer-principle-applied-aada2cdc6fb0"
+category = "ConcurrencyAndParallelism"
