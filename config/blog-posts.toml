@@ -716,3 +716,7 @@ category = "Internals"
 [[blog_posts]]
 url = "http://kvark.github.io/web/gpu/native/2020/05/03/point-of-webgpu-native.html"
 category = "Graphics"
+
+[[blog_posts]]
+url = "https://nikic.github.io/2020/05/10/Make-LLVM-fast-again.html"
+category = "Internals"
