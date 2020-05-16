@@ -728,3 +728,7 @@ category = "ConcurrencyAndParallelism"
 [[blog_posts]]
 url = "https://github.com/pretzelhammer/rust-blog/blob/master/posts/learning-rust-in-2020.md"
 category = "Introduction"
+
+[[blog_posts]]
+url = "https://nickwilcox.github.io/blog/autovec/"
+category = "Performance"
