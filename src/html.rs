@@ -98,50 +98,68 @@ fn find_article(dom: &Handle) -> Option<Handle> {
     candidate.map(|c| c.node)
 }
 
+#[derive(Eq, PartialEq, Debug, Copy, Clone)]
+enum CandidateType {
+    Article,
+    Main,
+    ContentDiv,
+}
+
 struct Candidate {
-    name: String,
+    type_: CandidateType,
     node: Handle,
 }
 
 fn find_article_(dom: &Handle, candidate: &mut Option<Candidate>) {
     match &dom.data {
         NodeData::Element { name, attrs, .. } => {
-            let mut is_candidate = false;
             let name = name.local.as_ref();
             let id_attr = find_id_attr(attrs);
+            let mut candidate_type = None;
+
             if name == "article" {
-                is_candidate = true;
+                candidate_type = Some(CandidateType::Article);
             }
             if name == "main" {
-                is_candidate = true;
+                candidate_type = Some(CandidateType::Main);
             }
             // As in bcantrill's pages
             if name == "div" && id_attr == Some("content".to_string()) {
-                is_candidate = true;
+                candidate_type = Some(CandidateType::ContentDiv);
             }
 
-            if is_candidate {
+            if let Some(candidate_type) = candidate_type {
                 match candidate {
                     None => {
                         *candidate = Some(Candidate {
-                            name: name.to_string(),
+                            type_: candidate_type,
                             node: dom.clone(),
                         });
                     }
                     Some(ref mut candidate) => {
                         warn!("multiple article candidates");
-                        if name == "article" {
-                            warn!("upgrading from '{}' to 'article'", candidate.name);
-                            *candidate = Candidate {
-                                name: name.to_string(),
-                                node: dom.clone(),
-                            };
-                        } else if candidate.name == "div" {
-                            warn!("upgrading from 'div' to '{}'", name);
-                            *candidate = Candidate {
-                                name: name.to_string(),
-                                node: dom.clone(),
-                            };
+                        let upgraded;
+                        match (candidate.type_, candidate_type) {
+                            (_, CandidateType::Article) => {
+                                *candidate = Candidate {
+                                    type_: candidate_type,
+                                    node: dom.clone(),
+                                };
+                                upgraded = true;
+                            }
+                            (CandidateType::ContentDiv, _) => {
+                                *candidate = Candidate {
+                                    type_: candidate_type,
+                                    node: dom.clone(),
+                                };
+                                upgraded = true;
+                            }
+                            _ => {
+                                upgraded = false;
+                            }
+                        }
+                        if upgraded {
+                            warn!("upgrading article from {:?} to {:?}", candidate.type_, candidate_type);
                         } else {
                             warn!("new candidate: {}", name);
                             warn!("using old candidate");
