@@ -14,6 +14,11 @@ github = "bcantrill"
 blog = "http://dtrace.org/blogs/bmc"
 
 [[authors]]
+name = "Graydon Hoare"
+github = "graydon"
+blog = "http://graydon2.dreamwidth.org"
+
+[[authors]]
 name = "Manish Goregaokar"
 github = "manishearth"
 blog = "https://manishearth.github.io"

@@ -103,6 +103,7 @@ enum CandidateType {
     Article,
     Main,
     ContentDiv,
+    Dreamwidth,
 }
 
 struct Candidate {
@@ -115,6 +116,10 @@ fn find_article_(dom: &Handle, candidate: &mut Option<Candidate>) {
         NodeData::Element { name, attrs, .. } => {
             let name = name.local.as_ref();
             let id_attr = find_id_attr(attrs);
+            let dreamwidth_entry_id = id_attr.as_ref().map(|id| {
+                id.starts_with("entry-")
+                    && !id.starts_with("entry-wrapper-")
+            }).unwrap_or(false);
             let mut candidate_type = None;
 
             if name == "article" {
@@ -127,6 +132,10 @@ fn find_article_(dom: &Handle, candidate: &mut Option<Candidate>) {
             if name == "div" && id_attr == Some("content".to_string()) {
                 candidate_type = Some(CandidateType::ContentDiv);
             }
+            // dreamwidth.org
+            if name == "div" && dreamwidth_entry_id {
+                candidate_type = Some(CandidateType::Dreamwidth);
+            }
 
             if let Some(candidate_type) = candidate_type {
                 match candidate {
@@ -138,16 +147,17 @@ fn find_article_(dom: &Handle, candidate: &mut Option<Candidate>) {
                     }
                     Some(ref mut candidate) => {
                         warn!("multiple article candidates");
+                        let old_candidate_type = candidate.type_;
                         let upgraded;
-                        match (candidate.type_, candidate_type) {
-                            (_, CandidateType::Article) => {
+                        match (old_candidate_type, candidate_type) {
+                            (CandidateType::Main, CandidateType::Article) => {
                                 *candidate = Candidate {
                                     type_: candidate_type,
                                     node: dom.clone(),
                                 };
                                 upgraded = true;
                             }
-                            (CandidateType::ContentDiv, _) => {
+                            (CandidateType::ContentDiv, CandidateType::Dreamwidth) => {
                                 *candidate = Candidate {
                                     type_: candidate_type,
                                     node: dom.clone(),
@@ -159,10 +169,10 @@ fn find_article_(dom: &Handle, candidate: &mut Option<Candidate>) {
                             }
                         }
                         if upgraded {
-                            warn!("upgrading article from {:?} to {:?}", candidate.type_, candidate_type);
+                            warn!("upgrading article from {:?} to {:?}", old_candidate_type, candidate_type);
                         } else {
-                            warn!("new candidate: {}", name);
-                            warn!("using old candidate");
+                            warn!("new candidate: {:?}", candidate_type);
+                            warn!("using old candidate: {:?}", old_candidate_type);
                         }
                     }
                 }

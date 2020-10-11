@@ -96,6 +96,7 @@ publish = true
 
 [[blog_posts]]
 url = "http://graydon2.dreamwidth.org/1597.html"
+publish = true
 
 [[blog_posts]]
 url = "http://graydon2.dreamwidth.org/214016.html"
