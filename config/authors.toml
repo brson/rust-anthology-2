@@ -1,12 +1,7 @@
 [[authors]]
-name = "Niko Matsakis"
-github = "nikomatsakis"
-blog = "https://smallcultfollowing.com/babysteps/"
-
-[[authors]]
-name = "Manish Goregaokar"
-github = "manishearth"
-blog = "https://manishearth.github.io"
+name = "Andrew Gallant"
+github = "burntsushi"
+blog = "http://blog.burntsushi.net"
 
 [[authors]]
 name = "Brian Anderson"
@@ -14,7 +9,16 @@ github = "brson"
 blog = "https://brson.github.io"
 
 [[authors]]
-name = "Andrew Gallant"
-github = "burntsushi"
-blog = "http://blog.burntsushi.net"
+name = "Bryan Cantrill"
+github = "bcantrill"
+blog = "http://dtrace.org/blogs/bmc"
 
+[[authors]]
+name = "Manish Goregaokar"
+github = "manishearth"
+blog = "https://manishearth.github.io"
+
+[[authors]]
+name = "Niko Matsakis"
+github = "nikomatsakis"
+blog = "https://smallcultfollowing.com/babysteps/"

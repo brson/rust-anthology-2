@@ -83,7 +83,16 @@ url = "http://cglab.ca/~abeinges/blah/rust-unsafe-intro/"
 url = "http://cliffle.com/blog/m4vga-in-rust/"
 
 [[blog_posts]]
+url = "http://dtrace.org/blogs/bmc/2018/09/18/falling-in-love-with-rust/"
+publish = true
+
+[[blog_posts]]
 url = "http://dtrace.org/blogs/bmc/2018/09/28/the-relative-performance-of-c-and-rust/"
+publish = true
+
+[[blog_posts]]
+url = "http://dtrace.org/blogs/bmc/2020/10/11/rust-after-the-honeymoon/"
+publish = true
 
 [[blog_posts]]
 url = "http://graydon2.dreamwidth.org/1597.html"
