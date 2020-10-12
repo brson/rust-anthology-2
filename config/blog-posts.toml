@@ -100,12 +100,15 @@ publish = true
 
 [[blog_posts]]
 url = "http://graydon2.dreamwidth.org/214016.html"
+publish = true
 
 [[blog_posts]]
 url = "http://graydon2.dreamwidth.org/218040.html"
+publish = true
 
 [[blog_posts]]
 url = "http://graydon2.dreamwidth.org/247406.html"
+publish = true
 
 [[blog_posts]]
 url = "http://hermanradtke.com/2015/05/03/string-vs-str-in-rust-functions.html"

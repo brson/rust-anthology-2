@@ -97,6 +97,9 @@ fn walk(state: &mut State, node: &Node) {
                     handle_emph(state, node, name);
                     return;
                 }
+                "div" => {
+                    handle_div(state, node);
+                }
                 _ => {
                 }
             }
@@ -226,6 +229,10 @@ fn handle_para(state: &mut State, node: &Node) {
             walk_children(state, node);
         }
     }
+}
+
+fn handle_div(state: &mut State, node: &Node) {
+    // todo
 }
 
 fn handle_heading(state: &mut State, node: &Node, htext: &str) {

@@ -3,11 +3,11 @@ use anyhow::Result;
 use crate::doc::*;
 use markup5ever_rcdom as rcdom;
 use rcdom::{Node, NodeData};
-use crate::html::SubDom;
+use crate::html::{SubDom, CandidateType};
 use crate::doc::{Block, HeadingLevel};
 
-pub fn sanitize(doc: Document, post: &str) -> Document {
-    let doc = maybe_add_h1(doc, post);
+pub fn sanitize(doc: Document, post: &str, candidate_type: CandidateType) -> Document {
+    let doc = maybe_add_h1(doc, post, candidate_type);
     doc
 }
 
@@ -76,8 +76,8 @@ fn remove_leading_and_trailing_dashes(mut s: String) -> String {
 /// burntsushi). This hack looks for cases where there's the extracted doc
 /// contains no h1 before other headers, then looks for an h1 inside the dom and
 /// stuff it into the doc.
-fn maybe_add_h1(mut doc: Document, post: &str) -> Document {
-    if missing_h1(&doc) {
+fn maybe_add_h1(mut doc: Document, post: &str, candidate_type: CandidateType) -> Document {
+    if missing_h1(&doc) && candidate_type != CandidateType::Dreamwidth {
         if let Some(h1) = find_h1(post) {
             info!("subbing h1 from outer html in {:?}", doc.meta.origin_url);
             doc.body.blocks.insert(0, Block::Heading(h1));

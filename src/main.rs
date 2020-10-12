@@ -242,7 +242,7 @@ fn run_extract_article(cmd: CmdOpts<ExtractArticle>) -> Result<()> {
 fn run_convert_article(cmd: CmdOpts<ConvertArticle>) -> Result<()> {
     for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|meta, post| {
         match html::extract_article(&post) {
-            Ok(dom) => {
+            Ok((dom, type_)) => {
                 let doc = convert::from_dom(&meta, &dom);
                 info!("{:#?}", doc);
             }
@@ -261,9 +261,9 @@ fn run_render_article(cmd: CmdOpts<RenderArticle>) -> Result<()> {
     
     for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|meta, post| {
         match html::extract_article(&post) {
-            Ok(dom) => {
+            Ok((dom, type_)) => {
                 let doc = convert::from_dom(&meta, &dom);
-                let doc = sanitize::sanitize(doc, &post);
+                let doc = sanitize::sanitize(doc, &post, type_);
                 let title = extract::title(&doc);
                 let doc = render::to_string(&assets, &doc)?;
                 if !cmd.cmd.to_file {
@@ -308,9 +308,9 @@ fn run_copy_assets(cmd: CmdOpts<CopyAssets>) -> Result<()> {
 fn run_extract_title(cmd: CmdOpts<ExtractTitle>) -> Result<()> {
     for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|meta, post| {
         match html::extract_article(&post) {
-            Ok(dom) => {
+            Ok((dom, type_)) => {
                 let doc = convert::from_dom(&meta, &dom);
-                let doc = sanitize::sanitize(doc, &post);
+                let doc = sanitize::sanitize(doc, &post, type_);
                 let title = extract::title(&doc);
                 match title {
                     Some(title) => {
@@ -332,9 +332,9 @@ fn run_extract_title(cmd: CmdOpts<ExtractTitle>) -> Result<()> {
 fn run_generate_slug(cmd: CmdOpts<GenerateSlug>) -> Result<()> {
     for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|meta, post| {
         match html::extract_article(&post) {
-            Ok(dom) => {
+            Ok((dom, type_)) => {
                 let doc = convert::from_dom(&meta, &dom);
-                let doc = sanitize::sanitize(doc, &post);
+                let doc = sanitize::sanitize(doc, &post, type_);
                 let title = extract::title(&doc);
                 match title {
                     Some(title) => {
@@ -362,9 +362,9 @@ fn run_write_index(cmd: CmdOpts<WriteIndex>) -> Result<()> {
 
     for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|meta, post| {
         match html::extract_article(&post) {
-            Ok(dom) => {
+            Ok((dom, type_)) => {
                 let doc = convert::from_dom(&meta, &dom);
-                let doc = sanitize::sanitize(doc, &post);
+                let doc = sanitize::sanitize(doc, &post, type_);
                 let title = extract::title(&doc);
                 match title {
                     Some(title) => {
@@ -408,9 +408,9 @@ fn run_write_author_pages(cmd: CmdOpts<WriteAuthorPages>) -> Result<()> {
 
     for_each_post(&cmd.global_opts, &cmd.config, &cmd.cmd.url_regex, &|meta, post| {
         match html::extract_article(&post) {
-            Ok(dom) => {
+            Ok((dom, type_)) => {
                 let doc = convert::from_dom(&meta, &dom);
-                let doc = sanitize::sanitize(doc, &post);
+                let doc = sanitize::sanitize(doc, &post, type_);
                 let title = extract::title(&doc);
                 match title {
                     Some(title) => {

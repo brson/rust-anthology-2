@@ -19,7 +19,7 @@ pub fn walk_tags(src: &str) -> Result<()> {
 }
 
 pub fn extract_article_string(src: &str) -> Result<String> {
-    let (dom, node) = extract_article(src)?;
+    let ((dom, node), type_) = extract_article(src)?;
     let s = serialize_dom(&node)
         .context("serializing dom")?;
     Ok(s)
@@ -27,12 +27,14 @@ pub fn extract_article_string(src: &str) -> Result<String> {
 
 pub type SubDom = (RcDom, Handle);
 
-pub fn extract_article(src: &str) -> Result<SubDom> {
+pub fn extract_article(src: &str) -> Result<(SubDom, CandidateType)> {
     let dom = build_dom(src)?;
-    let node = find_article(&dom.document);
-    match node {
-        Some(node) => {
-            Ok((dom, node))
+    let candidate = find_article(&dom.document);
+    match candidate {
+        Some(candidate) => {
+            let node = candidate.node;
+            let type_ = candidate.type_;
+            Ok(((dom, node), type_))
         }
         None => {
             bail!("no article found");
@@ -92,14 +94,14 @@ fn walk_children(dom: &Handle, lvl: u32) {
     }
 }
 
-fn find_article(dom: &Handle) -> Option<Handle> {
+fn find_article(dom: &Handle) -> Option<Candidate> {
     let mut candidate = None;
     find_article_(dom, &mut candidate);
-    candidate.map(|c| c.node)
+    candidate
 }
 
 #[derive(Eq, PartialEq, Debug, Copy, Clone)]
-enum CandidateType {
+pub enum CandidateType {
     Article,
     Main,
     ContentDiv,
